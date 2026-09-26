@@ -6,6 +6,7 @@ import SwiftUI
 @main
 struct MemoryJanitorApp: App {
     static let dashboardWindowID = "dashboard"
+    static let onboardingWindowID = "welcome"
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = MonitorStore()
     @AppStorage(SettingsKey.showReclaimableInMenuBar) private var showReclaimable = true
@@ -19,8 +20,7 @@ struct MemoryJanitorApp: App {
         MenuBarExtra {
             StatusMenu(store: store)
         } label: {
-            Label { Text(menuTitle) } icon: { Image(nsImage: MenuBarGlyph.image) }
-                .labelStyle(.titleAndIcon)
+            MenuBarLabel(title: menuTitle)
         }
         .menuBarExtraStyle(.menu)
 
@@ -30,6 +30,12 @@ struct MemoryJanitorApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1100, height: 700)
         .windowResizability(.contentMinSize)
+
+        Window("Welcome to Memory Janitor", id: Self.onboardingWindowID) {
+            OnboardingView()
+        }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
 
         Settings {
             SettingsView(store: store)

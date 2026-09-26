@@ -3,6 +3,7 @@ import SwiftUI
 /// Settings window (⌘,).
 struct SettingsView: View {
     @ObservedObject var store: MonitorStore
+    @Environment(\.openWindow) private var openWindow
     @AppStorage(SettingsKey.closeBehavior) private var closeBehavior: CloseBehavior = .keepInMenuBar
     @AppStorage(SettingsKey.refreshInterval) private var refreshInterval: RefreshInterval = .fiveSeconds
     @AppStorage(SettingsKey.showReclaimableInMenuBar) private var showReclaimable = true
@@ -28,6 +29,10 @@ struct SettingsView: View {
             Section("Protected") { protectedList }
             Section("About") {
                 LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev")
+                Button("Show Welcome Again") {
+                    openWindow(id: MemoryJanitorApp.onboardingWindowID)
+                    NSApp.activate()
+                }
                 Text("Memory Janitor makes no network requests. Everything it reads stays on this Mac.")
                     .font(.caption).foregroundStyle(.secondary)
             }

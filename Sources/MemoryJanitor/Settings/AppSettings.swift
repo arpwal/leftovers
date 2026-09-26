@@ -33,6 +33,7 @@ enum SettingsKey {
     static let closeBehavior = "closeBehavior"
     static let refreshInterval = "refreshInterval"
     static let showReclaimableInMenuBar = "showReclaimableInMenuBar"
+    static let hasCompletedOnboarding = "hasCompletedOnboarding"
 }
 
 /// Typed reads for code that cannot use `@AppStorage` (delegate, store loop).

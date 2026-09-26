@@ -25,13 +25,17 @@ enum SnapshotCommand {
                 render(DashboardView(), size: NSSize(width: 1100, height: 700), store: store,
                        appearance: appearance, to: directory.appendingPathComponent("dashboard-\(section.slug)-\(name).png"))
             }
+            for page in OnboardingPage.allCases {
+                render(OnboardingView(initialPage: page), size: NSSize(width: 580, height: 600), store: store, settle: 2.4,
+                       appearance: appearance, to: directory.appendingPathComponent("welcome-\(page.rawValue + 1)-\(name).png"))
+            }
             render(SettingsView(store: store), size: NSSize(width: 500, height: 560), store: store,
                    appearance: appearance, to: directory.appendingPathComponent("settings-\(name).png"))
         }
         exit(0)
     }
 
-    private static func render<V: View>(_ view: V, size: NSSize, store: MonitorStore,
+    private static func render<V: View>(_ view: V, size: NSSize, store: MonitorStore, settle: TimeInterval = 0.6,
                                         appearance: NSAppearance.Name, to url: URL) {
         // Offscreen capture skips the window's own background; paint it.
         let root = view.environmentObject(store).background(Color(nsColor: .windowBackgroundColor))
@@ -41,8 +45,8 @@ enum SnapshotCommand {
         window.appearance = NSAppearance(named: appearance)
         window.contentView = host
         windows.append(window)
-        // Let Table and async layout settle before capturing.
-        RunLoop.main.run(until: Date().addingTimeInterval(0.6))
+        // Let Table, async layout and entrance animations settle before capturing.
+        RunLoop.main.run(until: Date().addingTimeInterval(settle))
         host.layoutSubtreeIfNeeded()
         guard let bitmap = host.bitmapImageRepForCachingDisplay(in: host.bounds) else { return }
         host.cacheDisplay(in: host.bounds, to: bitmap)
