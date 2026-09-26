@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Leftovers</title>
+    <link>https://arpwal.github.io/leftovers/</link>
+    <item>
+      <title>Leftovers 1.1.0</title>
+      <pubDate>Sat, 26 Sep 2026 23:02:56 +0000</pubDate>
+      <sparkle:version>3</sparkle:version>
+      <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/arpwal/leftovers/releases/tag/v1.1.0</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.1.0/Leftovers.zip" sparkle:edSignature="30HPyGHAphaLN1uhW5vUcFNqprD9hK8yFPtp35D7wC5PVuG/dwXwNxFTX6pXEbmir/f6+VKi4LSHpwosfb0nAg==" length="2662310" type="application/octet-stream"/>
+    </item>
+  </channel>
+</rss>
