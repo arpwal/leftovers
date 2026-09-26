@@ -1,0 +1,39 @@
+<!doctype html>
+<!-- Background of the Leftovers disk image (660×400 points). Rendered at 1x
+     and 2x by scripts/make-dmg-background.sh. Finder draws the icons and their
+     labels on top: Leftovers.app at (170, 200), Applications at (490, 200). -->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap">
+<style>
+html,body{margin:0;width:660px;height:400px;overflow:hidden}
+body{
+  font-family:"Inter",-apple-system,sans-serif;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 45%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+    linear-gradient(#e4e4e7 1px, transparent 1px) 0 0/24px 24px,
+    linear-gradient(90deg, #e4e4e7 1px, transparent 1px) 0 0/24px 24px,
+    #f4f4f5;
+}
+svg{position:absolute;left:0;top:0}
+.caption{position:absolute;left:0;right:0;top:318px;text-align:center}
+.caption b{display:block;font-size:17px;font-weight:600;color:#27272a;letter-spacing:-.01em}
+.caption span{display:block;margin-top:4px;font-size:12.5px;font-weight:500;color:#71717a}
+</style></head>
+<body>
+  <!-- Arrow between the two icons, in the app's emerald. -->
+  <svg width="660" height="400" viewBox="0 0 660 400" aria-hidden="true">
+    <defs>
+      <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#6ee7b7"/><stop offset="1" stop-color="#059669"/></linearGradient>
+      <!-- Filled head that follows the curve's direction at its end. -->
+      <marker id="head" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="#059669"/>
+      </marker>
+    </defs>
+    <path d="M258 200 C 300 162, 358 162, 392 196" fill="none" stroke="url(#g)" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="0.5 13" marker-end="url(#head)"/>
+  </svg>
+  <div class="caption">
+    <b>Drag Leftovers to Applications</b>
+    <span>Then open it from Applications. It lives in your menu bar.</span>
+  </div>
+</body></html>
