@@ -29,6 +29,12 @@ struct SettingsView: View {
             Section("About") {
                 LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev")
                 Button("Show Welcome Again") { WindowCoordinator.shared.showWelcome() }
+                LabeledContent("Free and open source") {
+                    HStack {
+                        Link("Star on GitHub", destination: AppLinks.repository)
+                        Link("Follow @arpwal", destination: AppLinks.author)
+                    }
+                }
                 Text("Leftovers makes no network requests. Everything it reads stays on this Mac.")
                     .font(.caption).foregroundStyle(.secondary)
             }

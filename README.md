@@ -153,6 +153,12 @@ packaging/         Info.plist, icon, release config
 scripts/           bundle, sign, notarize, release
 ```
 
+## Support
+
+Leftovers is free and will stay free. If it helped, [star the repository](https://github.com/arpwal/leftovers)
+so other people can find it, and follow [@arpwal on X](https://x.com/arpwal) for what's next.
+Bug reports and pull requests are welcome.
+
 ## License
 
 MIT © Arpit Agarwal
