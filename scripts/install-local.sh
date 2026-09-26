@@ -2,7 +2,7 @@
 # Copies build/MemoryJanitor.app to ~/Applications and relaunches it.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-pkill -x MemoryJanitor 2>/dev/null || true
+pkill -x MemoryJanitor 2>/dev/null && sleep 1 || true  # let it exit before relaunching
 rm -rf "$HOME/Applications/MemoryJanitor.app"
 mkdir -p "$HOME/Applications"
 cp -R build/MemoryJanitor.app "$HOME/Applications/"
