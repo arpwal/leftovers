@@ -132,7 +132,7 @@ SIGNING_IDENTITY_OVERRIDE=- scripts/sign.sh   # ad-hoc sign for local use
 scripts/install-local.sh       # copy to ~/Applications and launch
 ```
 
-Maintainers releasing a notarized build: `scripts/release.sh` (app + DMG, notarized and stapled, plus the Homebrew cask)
+Maintainers: `scripts/release.sh` bumps the version (patch by default; pass `minor` or `major`), builds, notarizes and staples the app and DMG, publishes the GitHub release, updates the Homebrew tap and verifies the live download. Commits and tags are signed.
 (configuration in [`packaging/release.env`](packaging/release.env)).
 
 ## Project layout
