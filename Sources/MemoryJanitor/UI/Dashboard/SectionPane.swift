@@ -28,6 +28,7 @@ struct SectionPane: View {
             if store.suspects.isEmpty {
                 ContentUnavailableView("No Leaks Found", systemImage: "checkmark.seal",
                                        description: Text("Nothing is holding memory it doesn't use."))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ProcessTable(processes: store.suspects, store: store)
             }

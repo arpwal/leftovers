@@ -13,7 +13,7 @@ struct SectionHeader: View {
             }
             Spacer()
             if section == .leaks {
-                Button("Clean Up \(Format.bytes(store.reclaimableBytes))…") { cleanUp() }
+                Button(store.suspects.isEmpty ? "Clean Up…" : "Clean Up \(Format.bytes(store.reclaimableBytes))…") { cleanUp() }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                     .disabled(store.suspects.isEmpty)

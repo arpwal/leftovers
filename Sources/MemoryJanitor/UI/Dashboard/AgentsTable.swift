@@ -12,6 +12,7 @@ struct AgentsTable: View {
             if sessions.isEmpty {
                 ContentUnavailableView("No Coding Agents Running", systemImage: "sparkles",
                                        description: Text("Claude Code, Codex, Gemini CLI and others show up here."))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 table
             }

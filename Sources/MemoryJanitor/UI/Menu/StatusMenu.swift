@@ -23,7 +23,7 @@ struct StatusMenu: View {
                     }
                 }
             }
-            Button("Clean Up All Leaks (\(Format.bytes(store.reclaimableBytes)))…") { cleanUp() }
+            Button(store.suspects.isEmpty ? "Clean Up All Leaks…" : "Clean Up All Leaks (\(Format.bytes(store.reclaimableBytes)))…") { cleanUp() }
                 .disabled(store.suspects.isEmpty)
         }
         Divider()
