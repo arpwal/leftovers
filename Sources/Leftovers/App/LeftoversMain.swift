@@ -9,6 +9,7 @@ enum LeftoversMain {
     static func main() {
         CommandLineInterface.runIfRequested()
         SnapshotCommand.runIfRequested()
+        UpdateCheckCommand.runIfRequested()
         let app = NSApplication.shared
         let delegate = AppDelegate()
         app.delegate = delegate

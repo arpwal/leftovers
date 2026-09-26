@@ -112,6 +112,7 @@ ln -s "/Applications/Leftovers.app/Contents/MacOS/Leftovers" ~/.local/bin/leftov
 leftovers --report   # human-readable summary
 leftovers --json     # machine-readable report (stable field names)
 leftovers --clean    # quit every likely leak; protected processes are refused
+leftovers --check-updates   # updater state and a check against the live feed
 ```
 
 An agent can run `leftovers --json`, read `likelyLeaks` and `duplicateToolServers`,
