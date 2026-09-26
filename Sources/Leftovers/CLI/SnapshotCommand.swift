@@ -42,6 +42,8 @@ enum SnapshotCommand {
             let window = WindowFactory.welcome(snapshotRoot(OnboardingView(initialPage: page), store), delegate: windowDelegate)
             capture(window, appearance: appearance, settle: 5, to: directory.appendingPathComponent("welcome-\(page.rawValue + 1)-\(suffix).png"))
         }
+        let header = WindowFactory.settings(snapshotRoot(MenuHeaderView(store: store), store), delegate: windowDelegate)
+        capture(header, appearance: appearance, settle: 0.5, to: directory.appendingPathComponent("menu-header-\(suffix).png"))
         let settings = WindowFactory.settings(snapshotRoot(SettingsView(store: store), store), delegate: windowDelegate)
         capture(settings, appearance: appearance, settle: 0.8, to: directory.appendingPathComponent("settings-\(suffix).png"))
     }

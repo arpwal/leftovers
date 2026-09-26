@@ -21,7 +21,7 @@ enum OnboardingPage: Int, CaseIterable, Identifiable {
         case .hiddenLeaks:
             return "Activity Monitor shows what is in RAM. A leak that has been swapped out barely shows up there, even while it slows your whole Mac. Leftovers measures the full footprint."
         case .agentLeftovers:
-            return "Like kids running through the house, every coding agent sets up dev servers and MCP servers, then moves on and leaves them running. Leftovers finds what was left on the table."
+            return "Like kids running through the house, every coding agent sets up dev servers and MCP servers, then moves on and leaves them running. Leftovers finds what was left lying around."
         case .brand:
             return "Clean up what your apps and agents left running. Leftovers never touches macOS itself, and it always asks before quitting anything."
         }

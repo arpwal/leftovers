@@ -8,7 +8,7 @@ struct OnboardingIllustration: View {
     var body: some View {
         switch page {
         case .hiddenLeaks: FootprintIllustration()
-        case .agentLeftovers: DirtyTablesIllustration()
+        case .agentLeftovers: LeftoversIllustration()
         case .brand: BrandIllustration()
         }
     }
