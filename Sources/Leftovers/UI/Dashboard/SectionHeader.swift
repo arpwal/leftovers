@@ -9,7 +9,7 @@ struct SectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(section.title).font(.system(size: 26, weight: .semibold))
-                Text(section.subtitle).foregroundStyle(.secondary)
+                Text(section.subtitle).foregroundStyle(.secondary).lineLimit(2)
             }
             Spacer()
             if section == .leaks {

@@ -68,6 +68,17 @@ final class MonitorStore: ObservableObject {
         return await terminator.terminate(process)
     }
 
+    func quitApp(_ group: AppGroup) async {
+        lastActionMessage = await AppQuitter.quit(group)
+        await refresh()
+    }
+
+    func quitAgent(_ session: AgentSession) async {
+        let quitter = AgentSessionQuitter(policy: ProtectionPolicy(userProtectedNames: protectedNames))
+        lastActionMessage = await quitter.quit(session)
+        await refresh()
+    }
+
     func toggleProtection(for name: String) {
         if protectedNames.contains(name) { protectedNames.remove(name) } else { protectedNames.insert(name) }
         namesStore.save(protectedNames)

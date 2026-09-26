@@ -5,6 +5,7 @@ import SwiftUI
 struct AgentsTable: View {
     let sessions: [AgentSession]
     let duplicates: [DuplicatedToolServer]
+    @ObservedObject var store: MonitorStore
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -42,20 +43,32 @@ struct AgentsTable: View {
             TableColumn("Agent") { session in
                 HStack(spacing: 10) {
                     AgentIcon(kind: session.kind, side: 22)
-                    Text(session.kind.rawValue).fontWeight(.medium)
+                    Text(session.kind.rawValue).fontWeight(.medium).lineLimit(1)
                 }
             }
-            .width(min: 150, ideal: 170)
+            .width(min: 120, ideal: 160)
             TableColumn("Project") { Text($0.project).lineLimit(1).help($0.root.workingDirectory ?? "") }
-                .width(min: 140, ideal: 200)
+                .width(min: 70, ideal: 160)
             TableColumn("Memory") { Text(Format.bytes($0.totalFootprint)).monospacedDigit() }
-                .width(90)
+                .width(min: 64, ideal: 84)
             TableColumn("Processes") { Text("\($0.members.count)").monospacedDigit() }
-                .width(75)
+                .width(min: 40, ideal: 70)
             TableColumn("Tool servers") { Text("\($0.toolServers.count)").monospacedDigit() }
-                .width(90)
+                .width(min: 40, ideal: 80)
             TableColumn("Running") { Text(Format.age($0.root.age)).monospacedDigit() }
-                .width(75)
+                .width(min: 50, ideal: 70)
+            TableColumn("") { session in Button("Quit") { quit(session) }.controlSize(.small) }
+                .width(min: 50, ideal: 56)
         }
+        .contextMenu(forSelectionType: AgentSession.ID.self) { ids in
+            if let session = sessions.first(where: { ids.contains($0.id) }) {
+                Button("Quit \(session.kind.rawValue) and What It Started…") { quit(session) }
+            }
+        }
+    }
+
+    private func quit(_ session: AgentSession) {
+        guard Confirm.quitAgent(session) else { return }
+        Task { await store.quitAgent(session) }
     }
 }

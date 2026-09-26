@@ -26,7 +26,8 @@ struct DashboardView: View {
     }
 
     private var splitView: some View {
-        NavigationSplitView {
+        // The sidebar always shows: there is no toggle, so it must not collapse.
+        NavigationSplitView(columnVisibility: .constant(.all)) {
             SidebarView(selection: $store.dashboardSection)
                 .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 260)
         } detail: {

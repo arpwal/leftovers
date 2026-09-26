@@ -19,17 +19,17 @@ struct ProcessTable: View {
                     }
                 }
             }
-            .width(min: 260, ideal: 380)
+            .width(min: 160, ideal: 340)
             TableColumn("Memory") { Text(Format.bytes($0.snapshot.footprintBytes)).monospacedDigit() }
-                .width(80)
+                .width(min: 64, ideal: 84)
             TableColumn("In RAM") { Text(Format.bytes($0.snapshot.residentBytes)).monospacedDigit().foregroundStyle(.secondary) }
-                .width(80)
+                .width(min: 60, ideal: 80)
             TableColumn("CPU") { Text(Format.cpu($0.cpuPercent)).monospacedDigit() }
-                .width(55)
+                .width(min: 40, ideal: 56)
             TableColumn("Running") { Text(Format.age($0.snapshot.age)).monospacedDigit() }
-                .width(70)
+                .width(min: 50, ideal: 70)
             TableColumn("") { ProcessActions(store: store, process: $0) }
-                .width(90)
+                .width(min: 76, ideal: 90)
         }
         .contextMenu(forSelectionType: ClassifiedProcess.ID.self) { ids in
             if let process = processes.first(where: { ids.contains($0.id) }) { rowMenu(process) }

@@ -32,12 +32,21 @@ struct StatusMenuBuilder {
         return items
     }
 
+    /// Each app opens a submenu: quit it (when safe) or see it in the dashboard.
     private func appItems() -> [NSMenuItem] {
         [.sectionHeader(title: "Using the Most Memory")] + store.appGroups.prefix(Self.appLimit).map { group in
-            ActionMenuItem(title: "\(group.name) — \(Format.bytes(group.totalFootprint))",
-                           image: menuIcon(AppIconProvider.icon(atPath: group.bundlePath))) {
-                windows.showDashboard(section: .apps)
+            let item = NSMenuItem(title: "\(group.name) — \(Format.bytes(group.totalFootprint))", action: nil, keyEquivalent: "")
+            item.image = menuIcon(AppIconProvider.icon(atPath: group.bundlePath))
+            let submenu = NSMenu()
+            if AppQuitter.canQuit(group, protectedNames: store.protectedNames) {
+                submenu.addItem(ActionMenuItem(title: "Quit \(group.name)…") {
+                    guard Confirm.quitApp(group) else { return }
+                    Task { await store.quitApp(group) }
+                })
             }
+            submenu.addItem(ActionMenuItem(title: "Show in Leftovers") { windows.showDashboard(section: .apps) })
+            item.submenu = submenu
+            return item
         }
     }
 

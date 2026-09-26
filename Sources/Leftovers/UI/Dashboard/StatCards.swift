@@ -5,22 +5,40 @@ struct StatCards: View {
     let system: SystemMemory
     let reclaimableBytes: UInt64
 
+    /// Four across when they fit, otherwise two by two; never wider than
+    /// the window, and never a lone card on its own row.
     var body: some View {
-        HStack(spacing: 12) {
-            card("Pressure") {
-                HStack(spacing: 8) {
-                    Circle().fill(Palette.color(for: system.pressure)).frame(width: 10, height: 10)
-                    Text(system.pressure.label)
-                }
-            } footer: { Text("\(system.availablePercent)% available") }
-            card("Swap") {
-                Text(Format.bytes(system.swapUsedBytes))
-            } footer: { SwapBar(fraction: system.swapFraction, total: system.swapTotalBytes) }
-            card("Compressed") { Text(Format.bytes(system.compressedBytes)) }
-                footer: { Text("of \(Format.bytes(system.totalBytes)) RAM") }
-            card("Reclaimable") { Text(Format.bytes(reclaimableBytes)) }
-                footer: { Text(reclaimableBytes == 0 ? "Nothing to clean up" : "From likely leaks") }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) { pressure; swap; compressed; reclaimable }
+            Grid(horizontalSpacing: 12, verticalSpacing: 12) {
+                GridRow { pressure; swap }
+                GridRow { compressed; reclaimable }
+            }
         }
+    }
+
+    private var pressure: some View {
+        card("Pressure") {
+            HStack(spacing: 8) {
+                Circle().fill(Palette.color(for: system.pressure)).frame(width: 10, height: 10)
+                Text(system.pressure.label)
+            }
+        } footer: { Text("\(system.availablePercent)% available") }
+    }
+
+    private var swap: some View {
+        card("Swap") { Text(Format.bytes(system.swapUsedBytes)) }
+            footer: { SwapBar(fraction: system.swapFraction, total: system.swapTotalBytes) }
+    }
+
+    private var compressed: some View {
+        card("Compressed") { Text(Format.bytes(system.compressedBytes)) }
+            footer: { Text("of \(Format.bytes(system.totalBytes)) RAM") }
+    }
+
+    private var reclaimable: some View {
+        card("Reclaimable") { Text(Format.bytes(reclaimableBytes)) }
+            footer: { Text(reclaimableBytes == 0 ? "Nothing to clean up" : "From likely leaks") }
     }
 
     private func card<Value: View, Footer: View>(_ title: String, @ViewBuilder value: () -> Value,
@@ -30,7 +48,7 @@ struct StatCards: View {
             value().font(.system(size: 20, weight: .semibold)).monospacedDigit()
             footer().font(.caption).foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(minWidth: 150, maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(.separator.opacity(0.6)))

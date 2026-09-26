@@ -19,7 +19,7 @@ struct SectionPane: View {
             }
         }
         .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(minWidth: 0, maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     @ViewBuilder private func content(_ report: MemoryReport) -> some View {
@@ -32,8 +32,8 @@ struct SectionPane: View {
             } else {
                 ProcessTable(processes: store.suspects, store: store)
             }
-        case .apps: AppsTable(groups: store.appGroups, totalBytes: report.system.totalBytes)
-        case .agents: AgentsTable(sessions: report.agents, duplicates: report.duplicateToolServers)
+        case .apps: AppsTable(groups: store.appGroups, totalBytes: report.system.totalBytes, store: store)
+        case .agents: AgentsTable(sessions: report.agents, duplicates: report.duplicateToolServers, store: store)
         case .processes: ProcessTable(processes: store.userProcesses, store: store)
         case .protected: ProcessTable(processes: store.protectedProcesses, store: store)
         }

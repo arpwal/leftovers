@@ -26,4 +26,16 @@ enum Confirm {
         return quit(title: "Quit \(suspects.count) likely leaks?", detail: names,
                     actionTitle: "Quit All and Free \(Format.bytes(bytes))")
     }
+
+    static func quitApp(_ group: AppGroup) -> Bool {
+        quit(title: "Quit \(group.name)?",
+             detail: "\(group.name) quits the same way as ⌘Q, so it can save your work first. It frees about \(Format.bytes(group.totalFootprint)).",
+             actionTitle: "Quit \(group.name)")
+    }
+
+    static func quitAgent(_ session: AgentSession) -> Bool {
+        quit(title: "Quit \(session.kind.rawValue) in \(session.project)?",
+             detail: "This stops the session and the \(session.members.count - 1) processes it started, freeing about \(Format.bytes(session.totalFootprint)). Work in progress in that session stops.",
+             actionTitle: "Quit Session")
+    }
 }
