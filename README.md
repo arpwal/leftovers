@@ -26,14 +26,24 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
 
 ## What it does
 
-- **Menu bar**: memory pressure, swap, and how much memory can be reclaimed.
-- **Likely leaks**: each one with a plain-language reason and a Quit button.
-- **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
-  Agent, Aider, OpenCode), including every process it started, and the tool servers
-  that several sessions each run their own copy of.
-- **Clean up**: quits every likely leak in one step, after showing you the list.
-- **Protect**: mark any app "never flag or quit".
+- **Menu bar**: a standard macOS menu with memory pressure, swap, reclaimable memory,
+  likely leaks, and the apps using the most memory, each shown with its real logo.
+- **Dashboard**: a sidebar window with five views.
+  - **Likely Leaks**: each one with a plain-language reason and a Quit button.
+  - **Apps**: every app with all of its helper processes summed, with the app's own icon.
+  - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
+    Agent, Aider, OpenCode), including everything it started, and the tool (MCP) servers
+    that several sessions each run their own copy of.
+  - **All Processes** and **Protected**.
+- **Clean Up**: quits every likely leak in one step, after a standard confirmation.
+- **Stays out of the way**: ⌘Q closes the window and Memory Janitor keeps watching from
+  the menu bar. To quit completely, use **Quit Memory Janitor** in the menu, or change
+  the behavior in Settings.
+- **Settings**: close behavior, open at login, refresh interval, menu-bar display, and
+  your protected apps.
 - **Command line for agents**: the same engine and safety rules, as text or JSON.
+
+App logos come from the apps installed on your Mac. Nothing is downloaded.
 
 ## What counts as a leak
 

@@ -22,4 +22,15 @@ enum AgentKind: String, CaseIterable, Codable {
         if scripts.contains("aider") { return .aider }
         return nil
     }
+
+    /// Desktop apps from the same vendor, used to borrow a recognisable logo.
+    var companionBundleIDs: [String] {
+        switch self {
+        case .claudeCode: return ["com.anthropic.claudefordesktop"]
+        case .codex: return ["com.openai.codex", "com.openai.chat"]
+        case .geminiCLI: return ["com.google.GeminiMacOS"]
+        case .cursorAgent: return ["com.todesktop.230313mzl4w4u92"]
+        case .aider, .openCode: return []
+        }
+    }
 }

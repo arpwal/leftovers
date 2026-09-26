@@ -20,12 +20,13 @@ enum SnapshotCommand {
         let store = MonitorStore()
         RunLoop.main.run(until: Date().addingTimeInterval(warmUp))
         for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
-            render(MenuBarView(), size: NSSize(width: 420, height: 330), store: store, appearance: appearance,
-                   to: directory.appendingPathComponent("popover-\(name).png"))
-            for tab in DashboardTab.allCases {
-                render(DashboardView(initialTab: tab), size: NSSize(width: 980, height: 560), store: store,
-                       appearance: appearance, to: directory.appendingPathComponent("dashboard-\(tab.slug)-\(name).png"))
+            for section in DashboardSection.allCases {
+                store.dashboardSection = section
+                render(DashboardView(), size: NSSize(width: 1100, height: 700), store: store,
+                       appearance: appearance, to: directory.appendingPathComponent("dashboard-\(section.slug)-\(name).png"))
             }
+            render(SettingsView(store: store), size: NSSize(width: 500, height: 560), store: store,
+                   appearance: appearance, to: directory.appendingPathComponent("settings-\(name).png"))
         }
         exit(0)
     }

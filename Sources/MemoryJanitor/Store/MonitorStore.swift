@@ -8,8 +8,8 @@ final class MonitorStore: ObservableObject {
     @Published private(set) var protectedNames: Set<String>
     @Published private(set) var lastActionMessage: String?
     @Published private(set) var busyIdentities: Set<ProcessIdentity> = []
-
-    static let refreshInterval: Duration = .seconds(5)
+    /// Which sidebar destination the dashboard shows; the menu can deep-link here.
+    @Published var dashboardSection: DashboardSection = .leaks
 
     private let engine = SampleEngine()
     private let terminator = ProcessTerminator()
@@ -21,7 +21,7 @@ final class MonitorStore: ObservableObject {
         loop = Task { [weak self] in
             while !Task.isCancelled {
                 await self?.refresh()
-                try? await Task.sleep(for: Self.refreshInterval)
+                try? await Task.sleep(for: AppSettings.refreshInterval.duration)
             }
         }
     }
@@ -31,6 +31,7 @@ final class MonitorStore: ObservableObject {
     var suspects: [ClassifiedProcess] { visible.filter { $0.verdict.isSuspect } }
     var userProcesses: [ClassifiedProcess] { visible.filter { $0.verdict == .normal } }
     var protectedProcesses: [ClassifiedProcess] { visible.filter { !$0.verdict.isKillable } }
+    var appGroups: [AppGroup] { AppGroup.group(report?.processes ?? []) }
     var reclaimableBytes: UInt64 { suspects.reduce(0) { $0 + $1.snapshot.footprintBytes } }
 
     private var visible: [ClassifiedProcess] {
