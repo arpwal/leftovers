@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leftovers: clean up what your apps and agents left running</title>
+<meta name="description" content="A free, open-source macOS menu-bar app that finds the dev servers, MCP servers and leaked helpers still holding memory, and quits them safely.">
+<meta property="og:title" content="Leftovers">
+<meta property="og:description" content="Clean up what your apps and agents left running. Free and open source for macOS.">
+<meta property="og:image" content="https://arpwal.github.io/leftovers/assets/og.png">
+<meta property="og:url" content="https://arpwal.github.io/leftovers/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#fafafa;--surface:#fff;--sunken:#f4f4f5;--ink:#18181b;--muted:#71717a;--line:#e4e4e7;
+  --accent:#059669;--accent-ink:#fff;--accent-soft:#ecfdf5;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  color-scheme:dark;--bg:#0c0c0e;--surface:#18181b;--sunken:#1f1f23;--ink:#f4f4f5;--muted:#a1a1aa;--line:#2e2e33;
+  --accent:#34d399;--accent-ink:#052e22;--accent-soft:#0b2a20;}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{margin:0;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--muted)}
+code,pre{font-family:var(--mono);font-size:14px}
+nav{display:flex;justify-content:space-between;align-items:center;padding-block:20px}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:600;text-decoration:none}
+nav .brand img{width:30px;height:30px}
+nav a.gh{font-size:15px;color:var(--muted);text-decoration:none}
+nav a.gh:hover{color:var(--ink)}
+.hero{display:grid;gap:22px;justify-items:center;text-align:center;padding-block:48px 28px}
+.hero img.icon{width:128px;height:128px;filter:drop-shadow(0 16px 30px rgba(5,150,105,.25))}
+.hero h1{font-size:clamp(34px,6vw,58px);font-weight:700;line-height:1.05;max-width:16ch}
+.hero p.lede{font-size:clamp(17px,2.2vw,21px);color:var(--muted);max-width:44ch}
+.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--surface)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:hover{filter:brightness(1.05)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.fine{font-size:14px;color:var(--muted)}
+.shot{display:block;width:100%;max-width:1000px;margin:24px auto 0;height:auto}
+section{padding-block:72px}
+.section-head{display:grid;gap:10px;max-width:640px;margin-bottom:36px}
+.section-head h2{font-size:clamp(26px,3.6vw,36px)}
+.problems{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;gap:10px;align-content:start}
+.card h3{font-size:19px}
+.big{font-size:40px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.big small{font-size:16px;font-weight:500;color:var(--muted);letter-spacing:0}
+.story{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.story img{width:100%;height:auto;max-width:460px;justify-self:center}
+@media (max-width:760px){.story{grid-template-columns:1fr}}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.features .card p{color:var(--muted);font-size:15.5px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pair img{width:100%;height:auto}
+@media (max-width:760px){.pair{grid-template-columns:1fr}}
+pre.term{margin:0;background:#141417;color:#e4e4e7;border-radius:14px;padding:18px 20px;overflow-x:auto;line-height:1.7}
+pre.term .c{color:#71717a}
+.install{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.safe li{margin-block:6px}
+footer{border-top:1px solid var(--line);padding-block:32px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+footer a{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#"><img src="assets/icon.png" alt="">Leftovers</a>
+    <a class="gh" href="https://github.com/arpwal/leftovers">GitHub</a>
+  </nav>
+
+  <header class="hero">
+    <img class="icon" src="assets/icon.png" alt="Leftovers app icon: a memory pressure dial">
+    <h1>Clean up what your apps and agents left running.</h1>
+    <p class="lede">A free, open-source menu-bar app for macOS. It finds the dev servers, MCP servers and leaked helpers still holding memory, and quits them safely.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://github.com/arpwal/leftovers/releases/latest/download/Leftovers.dmg">Download for Mac</a>
+      <a class="btn" href="https://github.com/arpwal/leftovers">View on GitHub</a>
+    </div>
+    <p class="fine">macOS 14 or later · Apple silicon and Intel · Signed and notarized · MIT license</p>
+    <img class="shot" src="screenshots/agents-light.png" alt="Leftovers showing memory used by each coding-agent session and the MCP servers they duplicate">
+  </header>
+
+  <section id="why">
+    <div class="section-head">
+      <h2>Your Mac is slow, and nothing tells you why.</h2>
+      <p class="muted">Activity Monitor sorts by memory in RAM. The memory that is actually lost is somewhere else.</p>
+    </div>
+    <div class="problems">
+      <div class="card">
+        <h3>Leaks hide in swap</h3>
+        <div class="big">59 GB <small>held by a helper showing 7 MB</small></div>
+        <p class="muted">A video encoder leaked for four days. Almost all of it had been pushed to swap, so it barely showed up. Leftovers measures the full footprint: RAM, compressed and swapped.</p>
+      </div>
+      <div class="card">
+        <h3>Agents leave a mess behind</h3>
+        <div class="big">3.9 GB <small>of duplicate MCP servers</small></div>
+        <p class="muted">Twelve Claude Code sessions each started their own copy of the same four MCP servers. Dev servers kept running days after their terminal closed.</p>
+      </div>
+      <div class="card">
+        <h3>Cleaning up shouldn't be risky</h3>
+        <div class="big">0 <small>macOS processes ever quit</small></div>
+        <p class="muted">Leftovers never touches system or root processes. It asks before quitting anything, and checks a process is still the same one before it sends a signal.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="story">
+    <div class="story">
+      <div class="section-head" style="margin:0">
+        <h2>Like kids running through the house.</h2>
+        <p class="muted">Each coding agent grabs something, sets up, and runs off to the next thing. The blocks, the plate and the shoes stay where they were dropped. On a Mac, those are dev servers, builds and MCP servers, and they keep holding memory until someone picks them up.</p>
+      </div>
+      <img src="screenshots/welcome-agents-light.png" alt="Leftovers welcome screen: blocks, takeout and shoes left on the floor, labelled dev server, MCP server and build">
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="section-head">
+      <h2>Everything in one menu-bar dial.</h2>
+      <p class="muted">The needle shows memory in use. The menu shows what to do about it.</p>
+    </div>
+    <div class="features">
+      <div class="card"><h3>Likely leaks</h3><p>Idle processes holding memory they don't use, each with a plain-language reason and a Quit button.</p></div>
+      <div class="card"><h3>Apps, with their logos</h3><p>Every app with all of its helper processes added up, so the one hogging memory has a face.</p></div>
+      <div class="card"><h3>Agents</h3><p>Memory for each Claude Code, Codex, Gemini CLI, Cursor Agent, Aider or OpenCode session, and everything it started.</p></div>
+      <div class="card"><h3>One-step cleanup</h3><p>Quit every likely leak at once, after a standard confirmation that lists what will stop.</p></div>
+      <div class="card"><h3>Stays out of the way</h3><p>About 22 MB and no CPU at idle. ⌘Q closes the window; it keeps watching from the menu bar.</p></div>
+      <div class="card"><h3>Private</h3><p>No network requests, no accounts, no telemetry. Everything it reads stays on your Mac.</p></div>
+    </div>
+    <div class="pair" style="margin-top:28px">
+      <img src="screenshots/leaks-light.png" alt="Likely Leaks view">
+      <img src="screenshots/apps-dark.png" alt="Apps view in dark mode">
+    </div>
+  </section>
+
+  <section id="agents">
+    <div class="section-head">
+      <h2>Built for agents, usable by agents.</h2>
+      <p class="muted">The app is also a command-line tool with the same engine and the same safety rules, so an agent can check memory and clean up after itself.</p>
+    </div>
+<pre class="term"><span class="c"># add the command once</span>
+ln -s /Applications/Leftovers.app/Contents/MacOS/Leftovers ~/.local/bin/leftovers
+
+leftovers --report   <span class="c"># readable summary</span>
+leftovers --json     <span class="c"># likelyLeaks, agents, duplicateToolServers</span>
+leftovers --clean    <span class="c"># quit likely leaks; protected processes are refused</span></pre>
+  </section>
+
+  <section id="install">
+    <div class="section-head">
+      <h2>Install</h2>
+    </div>
+    <div class="install">
+      <div class="card">
+        <h3>Download</h3>
+        <p class="muted">Open the disk image and drag Leftovers to Applications. It's signed and notarized by Apple, so it opens without warnings.</p>
+        <p><a class="btn primary" href="https://github.com/arpwal/leftovers/releases/latest/download/Leftovers.dmg">Download for Mac</a></p>
+      </div>
+      <div class="card">
+        <h3>Homebrew</h3>
+<pre class="term">brew install --cask arpwal/tap/leftovers</pre>
+        <p class="fine">Or build from source with Swift 6: <code>swift build</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Leftovers is free and open source under the MIT license.</span>
+    <span><a href="https://github.com/arpwal/leftovers">Source</a> · <a href="https://github.com/arpwal/leftovers/releases">Releases</a> · <a href="https://github.com/arpwal/leftovers/issues">Report an issue</a></span>
+  </footer>
+</div>
+</body>
+</html>

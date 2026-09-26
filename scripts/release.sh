@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Full release: bundle → sign (Developer ID) → notarize → staple → dist/.
-# Publishing to GitHub is a separate, manual step:
-#   gh release create v$VERSION dist/Leftovers-$VERSION.zip dist/*.sha256
+# Full release: bundle → sign → notarize + staple (app and DMG) → cask.
+# Publishing is separate and manual:
+#   gh release create v$VERSION dist/Leftovers.dmg dist/Leftovers.zip dist/SHA256SUMS
 set -euo pipefail
 cd "$(dirname "$0")"
 ./bundle.sh
 ./sign.sh
 ./notarize.sh
+./update-cask.sh
