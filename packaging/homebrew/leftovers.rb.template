@@ -9,7 +9,7 @@ cask "leftovers" do
   desc "Menu-bar app that cleans up what apps and coding agents left running"
   homepage "https://arpwal.github.io/leftovers/"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "Leftovers.app"
 
