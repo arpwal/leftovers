@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+  <clipPath id="sq"><path d="M285,100 H739 C841,100 924,183 924,285 V739 C924,841 841,924 739,924 H285 C183,924 100,841 100,739 V285 C100,183 183,100 285,100 Z"/></clipPath>
+  <filter id="drop" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+  <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".55" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity=".30"/></linearGradient>
+  <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".5" stop-color="#fff" stop-opacity=".25"/><stop offset="1" stop-color="#fff" stop-opacity=".7"/></linearGradient>
+  <radialGradient id="sheen" cx=".3" cy=".08" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
+</defs>
+<path d="M285,100 H739 C841,100 924,183 924,285 V739 C924,841 841,924 739,924 H285 C183,924 100,841 100,739 V285 C100,183 183,100 285,100 Z" transform="translate(0 12)" fill="#000" opacity=".28" filter="url(#drop)"/>
+<defs><linearGradient id="bgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset=".55" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>
+<g clip-path="url(#sq)">
+  <rect width="1024" height="1024" fill="url(#bgA)"/>
+  <rect width="1024" height="1024" fill="url(#sheen)"/>
+  <rect x="300" y="330" width="424" height="424" rx="86" fill="#064e3b" opacity=".45" filter="url(#soft)"/>
+  <g fill="url(#glass)" stroke="url(#rim)" stroke-width="3">
+    <rect x="334" y="232" width="36" height="62" rx="16"/>
+    <rect x="334" y="730" width="36" height="62" rx="16"/>
+    <rect x="232" y="334" width="62" height="36" rx="16"/>
+    <rect x="730" y="334" width="62" height="36" rx="16"/>
+    <rect x="414" y="232" width="36" height="62" rx="16"/>
+    <rect x="414" y="730" width="36" height="62" rx="16"/>
+    <rect x="232" y="414" width="62" height="36" rx="16"/>
+    <rect x="730" y="414" width="62" height="36" rx="16"/>
+    <rect x="494" y="232" width="36" height="62" rx="16"/>
+    <rect x="494" y="730" width="36" height="62" rx="16"/>
+    <rect x="232" y="494" width="62" height="36" rx="16"/>
+    <rect x="730" y="494" width="62" height="36" rx="16"/>
+    <rect x="574" y="232" width="36" height="62" rx="16"/>
+    <rect x="574" y="730" width="36" height="62" rx="16"/>
+    <rect x="232" y="574" width="62" height="36" rx="16"/>
+    <rect x="730" y="574" width="62" height="36" rx="16"/>
+    <rect x="654" y="232" width="36" height="62" rx="16"/>
+    <rect x="654" y="730" width="36" height="62" rx="16"/>
+    <rect x="232" y="654" width="62" height="36" rx="16"/>
+    <rect x="730" y="654" width="62" height="36" rx="16"/>
+  </g>
+  <rect x="290" y="290" width="444" height="444" rx="88" fill="url(#glass)" stroke="url(#rim)" stroke-width="4"/>
+  <rect x="290" y="290" width="444" height="222" rx="88" fill="#fff" opacity=".10"/>
+  <path d="M512,390 C526.64,497.36 526.64,497.36 634,512 C526.64,526.64 526.64,526.64 512,634 C497.36,526.64 497.36,526.64 390,512 C497.36,497.36 497.36,497.36 512,390 Z" fill="#fff" opacity=".55" filter="url(#glow)"/>
+  <path d="M512,400 C525.44,498.56 525.44,498.56 624,512 C525.44,525.44 525.44,525.44 512,624 C498.56,525.44 498.56,525.44 400,512 C498.56,498.56 498.56,498.56 512,400 Z" fill="#fff"/>
+  <path d="M640,358 C644.08,387.92 644.08,387.92 674,392 C644.08,396.08 644.08,396.08 640,426 C635.92,396.08 635.92,396.08 606,392 C635.92,387.92 635.92,387.92 640,358 Z" fill="#fff" opacity=".9"/>
+</g>
+<path d="M285,100 H739 C841,100 924,183 924,285 V739 C924,841 841,924 739,924 H285 C183,924 100,841 100,739 V285 C100,183 183,100 285,100 Z" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
+</svg>
