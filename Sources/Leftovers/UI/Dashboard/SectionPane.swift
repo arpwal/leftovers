@@ -8,11 +8,13 @@ struct SectionPane: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             SectionHeader(section: section)
+            if let system = store.system {
+                StatCards(system: system, reclaimableBytes: store.report.map { _ in store.reclaimableBytes })
+            }
             if let report = store.report {
-                StatCards(system: report.system, reclaimableBytes: store.reclaimableBytes)
                 content(report)
             } else {
-                ProgressView("Reading memory…").frame(maxWidth: .infinity, maxHeight: .infinity)
+                LoadingState(text: "Reading processes…")
             }
             if let message = store.lastActionMessage {
                 Text(message).font(.caption).foregroundStyle(.secondary)
@@ -33,7 +35,12 @@ struct SectionPane: View {
                 ProcessTable(processes: store.suspects, store: store)
             }
         case .apps: AppsTable(groups: store.appGroups, totalBytes: report.system.totalBytes, store: store)
-        case .agents: AgentsTable(sessions: report.agents, duplicates: report.duplicateToolServers, store: store)
+        case .agents:
+            if report.agentsReady {
+                AgentsTable(sessions: report.agents, duplicates: report.duplicateToolServers, store: store)
+            } else {
+                LoadingState(text: "Reading agent sessions…")
+            }
         case .processes: ProcessTable(processes: store.userProcesses, store: store)
         case .protected: ProcessTable(processes: store.protectedProcesses, store: store)
         }

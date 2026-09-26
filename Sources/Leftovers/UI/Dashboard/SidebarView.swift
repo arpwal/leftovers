@@ -32,18 +32,21 @@ struct SidebarView: View {
         }
     }
 
-    @ViewBuilder private var pressureFooter: some View {
-        if let system = store.report?.system {
-            HStack(spacing: 8) {
-                Circle().fill(Palette.color(for: system.pressure)).frame(width: 8, height: 8)
-                Text("Pressure \(system.pressure.label.lowercased())")
-                Spacer()
-                Text("\(system.availablePercent)% free").monospacedDigit()
+    private var pressureFooter: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let system = store.system {
+                HStack(spacing: 8) {
+                    Circle().fill(Palette.color(for: system.pressure)).frame(width: 8, height: 8)
+                    Text("Pressure \(system.pressure.label.lowercased())")
+                    Spacer()
+                    Text("\(system.availablePercent)% free").monospacedDigit()
+                }
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            ScanSpeedLabel(stats: store.scanStats)
         }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }

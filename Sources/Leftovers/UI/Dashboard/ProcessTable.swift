@@ -4,9 +4,10 @@ import SwiftUI
 struct ProcessTable: View {
     let processes: [ClassifiedProcess]
     let store: MonitorStore
+    @State private var selection = Set<ClassifiedProcess.ID>()
 
     var body: some View {
-        Table(processes) {
+        Table(processes, selection: $selection) {
             TableColumn("Process") { process in
                 HStack(spacing: 10) {
                     ProcessIcon(snapshot: process.snapshot, side: 22)
@@ -33,6 +34,9 @@ struct ProcessTable: View {
         }
         .contextMenu(forSelectionType: ClassifiedProcess.ID.self) { ids in
             if let process = processes.first(where: { ids.contains($0.id) }) { rowMenu(process) }
+        } primaryAction: { ids in
+            // Double-click (or Return) shows the process in Finder.
+            processes.filter { ids.contains($0.id) }.forEach(ProcessCommands.revealInFinder)
         }
     }
 

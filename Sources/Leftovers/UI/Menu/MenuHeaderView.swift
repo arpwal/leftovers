@@ -8,7 +8,7 @@ struct MenuHeaderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            if let system = store.report?.system {
+            if let system = store.system {
                 HStack {
                     Text("Memory").font(.system(size: 13, weight: .semibold))
                     Spacer()
@@ -25,6 +25,7 @@ struct MenuHeaderView: View {
                     Text("Reclaimable \(Format.bytes(store.reclaimableBytes))")
                 }
                 .foregroundStyle(.secondary)
+                ScanSpeedLabel(stats: store.scanStats).foregroundStyle(.tertiary)
             } else {
                 Text("Reading memory…").foregroundStyle(.secondary)
             }

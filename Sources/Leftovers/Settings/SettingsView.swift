@@ -6,6 +6,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.closeBehavior) private var closeBehavior: CloseBehavior = .keepInMenuBar
     @AppStorage(SettingsKey.refreshInterval) private var refreshInterval: RefreshInterval = .fiveSeconds
     @AppStorage(SettingsKey.showReclaimableInMenuBar) private var showReclaimable = true
+    @AppStorage(SettingsKey.showInDock) private var showInDock = true
     @State private var openAtLogin = LoginItem.isEnabled
     @State private var loginError: String?
     @State private var checksForUpdates = UpdateController.shared.automaticallyChecks
@@ -19,6 +20,11 @@ struct SettingsView: View {
                 Toggle("Open at login", isOn: $openAtLogin)
                     .onChange(of: openAtLogin) { _, enabled in loginError = LoginItem.setEnabled(enabled) }
                 if let loginError { Text(loginError).font(.caption).foregroundStyle(.secondary) }
+                Toggle("Show Leftovers in the Dock", isOn: $showInDock)
+                    .onChange(of: showInDock) { _, _ in
+                        NSApp.setActivationPolicy(AppSettings.activationPolicy)
+                        NSApp.activate() // keep Settings in front after the switch
+                    }
                 Toggle("Show reclaimable memory in the menu bar", isOn: $showReclaimable)
             }
             Section("Updates") { updatesSection }

@@ -5,25 +5,35 @@ import Foundation
 @MainActor
 final class MonitorStore: ObservableObject {
     @Published private(set) var report: MemoryReport?
+    /// System totals, published before the (slower) process reading.
+    @Published private(set) var system: SystemMemory?
+    @Published private(set) var scanStats: ScanStats?
     @Published private(set) var protectedNames: Set<String>
     @Published private(set) var lastActionMessage: String?
     @Published private(set) var busyIdentities: Set<ProcessIdentity> = []
     /// Which sidebar destination the dashboard shows; the menu can deep-link here.
     @Published var dashboardSection: DashboardSection = .leaks
 
-    private let engine = SampleEngine()
+    nonisolated private let engine = SampleEngine()
     private let terminator = ProcessTerminator()
     private let namesStore = ProtectedNamesStore()
     private var loop: Task<Void, Never>?
+    private var hasReported = false
+    private var hasReportedAgents = false
     /// Optional rewrite of each report before it is shown (snapshot redaction).
     var reportTransform: ((MemoryReport) -> MemoryReport)?
 
     init() {
-        protectedNames = namesStore.load()
+        let names = namesStore.load()
+        protectedNames = names
+        // The first reading starts right now, in the background, not when the
+        // main thread is next free.
+        let first = startReading(protectedNames: names)
         loop = Task { [weak self] in
+            await first.value
             while !Task.isCancelled {
-                await self?.refresh()
                 try? await Task.sleep(for: AppSettings.refreshInterval.duration)
+                await self?.refresh()
             }
         }
     }
@@ -40,9 +50,43 @@ final class MonitorStore: ObservableObject {
         (report?.processes ?? []).filter { $0.snapshot.footprintBytes >= Thresholds.listMinFootprint }
     }
 
+    /// Reads in three phases on a background task and publishes each as soon
+    /// as it is ready: totals, then processes, then agents. The reading never
+    /// waits for the main thread, so the first one runs in parallel with
+    /// AppKit's launch. Later refreshes keep the previous agents on screen
+    /// until the new ones are in (no flicker).
     func refresh() async {
-        let sampled = await engine.sample(protectedNames: protectedNames)
-        report = reportTransform?(sampled) ?? sampled
+        await startReading(protectedNames: protectedNames).value
+    }
+
+    nonisolated private func startReading(protectedNames: Set<String>) -> Task<Void, Never> {
+        Task.detached(priority: .userInitiated) { [engine] in
+            let system = await engine.readSystem()
+            Task { @MainActor in self.publish(system: system) }
+            let processes = await engine.readProcesses(protectedNames: protectedNames)
+            Task { @MainActor in self.publish(system: system, processes: processes, agents: nil) }
+            let agents = await engine.readAgents(processes.snapshots)
+            await MainActor.run { self.publish(system: system, processes: processes, agents: agents) }
+        }
+    }
+
+    private func publish(system: SystemMemory) {
+        if self.system == nil { StartupTrace.mark("memory totals shown") }
+        self.system = system
+    }
+
+    private func publish(system: SystemMemory, processes: ProcessReading, agents: AgentReading?) {
+        let previous = report.flatMap { $0.agentsReady ? $0 : nil }
+        let next = MemoryReport(system: system, processes: processes.processes,
+                                agents: agents?.agents ?? previous?.agents ?? [],
+                                duplicateToolServers: agents?.duplicates ?? previous?.duplicateToolServers ?? [],
+                                takenAt: Date(), agentsReady: agents != nil || previous != nil)
+        report = reportTransform?(next) ?? next
+        if !hasReported { hasReported = true; StartupTrace.mark("processes shown") }
+        guard let agents else { return }
+        if !hasReportedAgents { hasReportedAgents = true; StartupTrace.mark("agents shown") }
+        scanStats = ScanStats(processCount: processes.snapshots.count, processMilliseconds: processes.milliseconds,
+                              agentCount: agents.agents.count, agentMilliseconds: agents.milliseconds)
     }
 
     func terminate(_ process: ClassifiedProcess) async {

@@ -6,9 +6,10 @@ struct AppsTable: View {
     let groups: [AppGroup]
     let totalBytes: UInt64
     @ObservedObject var store: MonitorStore
+    @State private var selection = Set<AppGroup.ID>()
 
     var body: some View {
-        Table(groups) {
+        Table(groups, selection: $selection) {
             TableColumn("App") { group in
                 HStack(spacing: 10) {
                     Image(nsImage: AppIconProvider.icon(atPath: group.bundlePath))
@@ -33,10 +34,18 @@ struct AppsTable: View {
             .width(min: 50, ideal: 56)
         }
         .contextMenu(forSelectionType: AppGroup.ID.self) { ids in
-            if let group = groups.first(where: { ids.contains($0.id) }), canQuit(group) {
-                Button("Quit \(group.name)…") { quit(group) }
+            if let group = groups.first(where: { ids.contains($0.id) }) {
+                Button("Show \(group.name)") { bringToFront(group) }
+                if canQuit(group) { Button("Quit \(group.name)…") { quit(group) } }
             }
+        } primaryAction: { ids in
+            // Double-click (or Return) brings the app to the front.
+            groups.filter { ids.contains($0.id) }.forEach(bringToFront)
         }
+    }
+
+    private func bringToFront(_ group: AppGroup) {
+        AppQuitter.runningApps(for: group).first?.activate()
     }
 
     private func canQuit(_ group: AppGroup) -> Bool {

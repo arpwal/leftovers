@@ -26,7 +26,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
 
     private func updateButton() {
         guard let button = statusItem.button else { return }
-        let available = Double(store.report?.system.availablePercent ?? 100)
+        let available = Double(store.system?.availablePercent ?? 100)
         button.image = MenuBarGlyph.image(fraction: (100 - available) / 100)
         let showAmount = UserDefaults.standard.object(forKey: SettingsKey.showReclaimableInMenuBar) as? Bool ?? true
         button.title = showAmount && !store.suspects.isEmpty ? " " + Format.bytes(store.reclaimableBytes) : ""

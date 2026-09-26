@@ -3,19 +3,51 @@ import AppKit
 /// Owns the app's long-lived pieces. What ⌘Q means lives in `QuitController`.
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var store: MonitorStore?
+    private let store: MonitorStore
     private var statusItem: StatusItemController?
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        let store = MonitorStore()
+    init(store: MonitorStore) {
         self.store = store
+        super.init()
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        StartupTrace.mark("did finish launching")
         WindowCoordinator.shared.store = store
         statusItem = StatusItemController(store: store)
         NSApp.mainMenu = MainMenu.make()
-        UpdateController.shared.start()
+        StartupTrace.mark("menu bar item ready")
+        showFirstWindow()
+        // The updater isn't needed to draw anything: start it after launch.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { UpdateController.shared.start() }
+    }
+
+    /// Welcome on first run; otherwise the dashboard, when Leftovers is a Dock
+    /// app and wasn't started as a login item (those stay quietly in the menu bar).
+    private func showFirstWindow() {
         if !UserDefaults.standard.bool(forKey: SettingsKey.hasCompletedOnboarding) {
             WindowCoordinator.shared.showWelcome()
+        } else if AppSettings.showInDock, !launchedAsLoginItem {
+            WindowCoordinator.shared.showDashboard()
         }
+    }
+
+    private var launchedAsLoginItem: Bool {
+        let event = NSAppleEventManager.shared().currentAppleEvent
+        return event?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem
+    }
+
+    /// Clicking the Dock icon brings the dashboard back.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag { WindowCoordinator.shared.showDashboard() }
+        return true
+    }
+
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu()
+        menu.addItem(ActionMenuItem(title: "Open Leftovers") { WindowCoordinator.shared.showDashboard() })
+        menu.addItem(ActionMenuItem(title: "Settings…") { WindowCoordinator.shared.showSettings() })
+        return menu
     }
 
     /// Every termination request quits. ⌘Q never reaches here: the main

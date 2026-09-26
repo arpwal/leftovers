@@ -6,6 +6,7 @@ struct AgentsTable: View {
     let sessions: [AgentSession]
     let duplicates: [DuplicatedToolServer]
     @ObservedObject var store: MonitorStore
+    @State private var selection = Set<AgentSession.ID>()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -39,7 +40,7 @@ struct AgentsTable: View {
     }
 
     private var table: some View {
-        Table(sessions) {
+        Table(sessions, selection: $selection) {
             TableColumn("Agent") { session in
                 HStack(spacing: 10) {
                     AgentIcon(kind: session.kind, side: 22)
@@ -62,9 +63,18 @@ struct AgentsTable: View {
         }
         .contextMenu(forSelectionType: AgentSession.ID.self) { ids in
             if let session = sessions.first(where: { ids.contains($0.id) }) {
+                Button("Show Project in Finder") { revealProject(session) }
                 Button("Quit \(session.kind.rawValue) and What It Started…") { quit(session) }
             }
+        } primaryAction: { ids in
+            // Double-click (or Return) shows the session's project folder.
+            sessions.filter { ids.contains($0.id) }.forEach(revealProject)
         }
+    }
+
+    private func revealProject(_ session: AgentSession) {
+        guard let folder = session.root.workingDirectory else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: folder)])
     }
 
     private func quit(_ session: AgentSession) {

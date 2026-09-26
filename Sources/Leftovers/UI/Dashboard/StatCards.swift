@@ -3,7 +3,8 @@ import SwiftUI
 /// Four headline numbers across the top of every section.
 struct StatCards: View {
     let system: SystemMemory
-    let reclaimableBytes: UInt64
+    /// nil while the process phase of the first reading is still running.
+    let reclaimableBytes: UInt64?
 
     /// Four across when they fit, otherwise two by two; never wider than
     /// the window, and never a lone card on its own row.
@@ -37,8 +38,13 @@ struct StatCards: View {
     }
 
     private var reclaimable: some View {
-        card("Reclaimable") { Text(Format.bytes(reclaimableBytes)) }
-            footer: { Text(reclaimableBytes == 0 ? "Nothing to clean up" : "From likely leaks") }
+        card("Reclaimable") { Text(reclaimableBytes.map(Format.bytes) ?? "…") }
+            footer: { Text(reclaimableFooter) }
+    }
+
+    private var reclaimableFooter: String {
+        guard let reclaimableBytes else { return "Reading processes…" }
+        return reclaimableBytes == 0 ? "Nothing to clean up" : "From likely leaks"
     }
 
     private func card<Value: View, Footer: View>(_ title: String, @ViewBuilder value: () -> Value,

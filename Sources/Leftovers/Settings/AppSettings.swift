@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 
 /// What happens when you close the dashboard or press ⌘Q in it.
 enum CloseBehavior: String, CaseIterable, Identifiable {
@@ -34,6 +34,7 @@ enum SettingsKey {
     static let refreshInterval = "refreshInterval"
     static let showReclaimableInMenuBar = "showReclaimableInMenuBar"
     static let hasCompletedOnboarding = "hasCompletedOnboarding"
+    static let showInDock = "showInDock"
 }
 
 /// Typed reads for code that cannot use `@AppStorage` (delegate, store loop).
@@ -41,6 +42,13 @@ enum AppSettings {
     static var closeBehavior: CloseBehavior {
         UserDefaults.standard.string(forKey: SettingsKey.closeBehavior).flatMap(CloseBehavior.init) ?? .keepInMenuBar
     }
+
+    /// Shown in the Dock by default; the user can hide it in Settings.
+    static var showInDock: Bool {
+        UserDefaults.standard.object(forKey: SettingsKey.showInDock) as? Bool ?? true
+    }
+
+    static var activationPolicy: NSApplication.ActivationPolicy { showInDock ? .regular : .accessory }
 
     static var refreshInterval: RefreshInterval {
         RefreshInterval(rawValue: UserDefaults.standard.integer(forKey: SettingsKey.refreshInterval)) ?? .fiveSeconds

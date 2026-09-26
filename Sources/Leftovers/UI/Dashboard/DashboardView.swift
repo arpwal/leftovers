@@ -34,6 +34,7 @@ struct DashboardView: View {
             SectionPane(section: store.dashboardSection)
         }
         .toolbar(removing: .sidebarToggle)
+        .onAppear { StartupTrace.mark("dashboard window on screen") }
         .tint(Palette.emerald500)
         .frame(minWidth: 900, minHeight: 560)
     }

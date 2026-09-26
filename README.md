@@ -46,11 +46,13 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
     that several sessions each run their own copy of.
   - **All Processes** and **Protected**.
 - **Clean Up**: quits every likely leak in one step, after a standard confirmation.
-- **Stays out of the way**: ⌘Q closes the window and Leftovers keeps watching from
-  the menu bar. To quit completely, use **Quit Leftovers** in the menu, or change
-  the behavior in Settings.
-- **Settings**: close behavior, open at login, refresh interval, menu-bar display, and
-  your protected apps.
+- **Fast**: the window and the first reading appear in well under a second, and
+  every refresh shows how long it took ("812 processes · 41 ms").
+- **Dock and menu bar**: a normal Dock app with a menu-bar dial. Hide the Dock icon
+  in Settings to keep just the dial. ⌘Q closes the window and Leftovers keeps
+  watching; **Quit Leftovers** in the menu quits completely.
+- **Settings**: Dock icon, close behavior, open at login, updates, refresh interval,
+  menu-bar display, and your protected apps.
 - **Command line for agents**: the same engine and safety rules, as text or JSON.
 
 App logos come from the apps installed on your Mac. Nothing is downloaded.
