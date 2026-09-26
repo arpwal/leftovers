@@ -2,7 +2,7 @@ import AppKit
 
 /// A minimal main menu. The app shows no menu bar of its own (it is a
 /// menu-bar app), but these key equivalents still work inside its windows:
-/// ⌘, Settings, ⌘W close, ⌘Q (see AppDelegate), and Edit → Copy for tables.
+/// ⌘, Settings, ⌘W close, ⌘Q (see QuitController), and Edit → Copy for tables.
 @MainActor
 enum MainMenu {
     static func make() -> NSMenu {
@@ -11,7 +11,7 @@ enum MainMenu {
             ActionMenuItem(title: "Check for Updates…") { UpdateController.shared.checkForUpdates() },
             ActionMenuItem(title: "Settings…", key: ",") { WindowCoordinator.shared.showSettings() },
             .separator(),
-            NSMenuItem(title: "Quit Leftovers", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"),
+            ActionMenuItem(title: "Quit Leftovers", key: "q") { QuitController.commandQ() },
         ]))
         main.addItem(submenu(title: "Edit", items: [
             NSMenuItem(title: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c"),
