@@ -67,6 +67,7 @@ struct StatusMenuBuilder {
     private func commandItems() -> [NSMenuItem] {
         [
             ActionMenuItem(title: "Open Leftovers", key: "d") { windows.showDashboard() },
+            ActionMenuItem(title: "Check for Updates…") { UpdateController.shared.checkForUpdates() },
             ActionMenuItem(title: "Settings…", key: ",") { windows.showSettings() },
             .separator(),
             ActionMenuItem(title: "Quit Leftovers", key: "q") { QuitController.quitCompletely() },

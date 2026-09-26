@@ -14,6 +14,11 @@
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
   <!-- Menu-bar only: no Dock icon, no app menu. -->
   <key>LSUIElement</key><true/>
+  <!-- Sparkle updates: the feed is published to GitHub Pages by each release;
+       only builds signed with the matching private key can install. -->
+  <key>SUFeedURL</key><string>https://arpwal.github.io/leftovers/appcast.xml</string>
+  <key>SUPublicEDKey</key><string>ma4dtLS8HxDOEOCtFHTxAX4MTJmLwwCsv9ddpCHVnD4=</string>
+  <key>SUScheduledCheckInterval</key><integer>86400</integer>
   <key>NSHumanReadableCopyright</key><string>__COPYRIGHT__</string>
 </dict>
 </plist>

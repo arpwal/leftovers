@@ -9,7 +9,7 @@ TAG="v$VERSION"
 PREVIOUS=$(git describe --tags --abbrev=0 2>/dev/null || true)
 NOTES="$(mktemp)"; trap 'rm -f "$NOTES"' EXIT
 
-git add packaging/release.env
+git add packaging/release.env docs/appcast.xml
 git commit -q -m "Release $TAG"
 git tag -s "$TAG" -m "Leftovers $VERSION"
 git push -q origin main "$TAG"

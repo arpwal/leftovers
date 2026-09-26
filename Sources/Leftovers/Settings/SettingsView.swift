@@ -8,6 +8,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.showReclaimableInMenuBar) private var showReclaimable = true
     @State private var openAtLogin = LoginItem.isEnabled
     @State private var loginError: String?
+    @State private var checksForUpdates = UpdateController.shared.automaticallyChecks
 
     var body: some View {
         Form {
@@ -20,6 +21,7 @@ struct SettingsView: View {
                 if let loginError { Text(loginError).font(.caption).foregroundStyle(.secondary) }
                 Toggle("Show reclaimable memory in the menu bar", isOn: $showReclaimable)
             }
+            Section("Updates") { updatesSection }
             Section("Monitoring") {
                 Picker("Refresh", selection: $refreshInterval) {
                     ForEach(RefreshInterval.allCases) { Text($0.label).tag($0) }
@@ -35,13 +37,21 @@ struct SettingsView: View {
                         Link("Follow @arpwal", destination: AppLinks.author)
                     }
                 }
-                Text("Leftovers makes no network requests. Everything it reads stays on this Mac.")
+                Text("The only network request Leftovers makes is the update check. Everything it reads about your processes stays on this Mac.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
         .frame(width: 500)
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    @ViewBuilder private var updatesSection: some View {
+        Toggle("Check for updates automatically", isOn: $checksForUpdates)
+            .onChange(of: checksForUpdates) { _, enabled in UpdateController.shared.automaticallyChecks = enabled }
+            .disabled(!UpdateController.shared.isAvailable)
+        Button("Check for Updates…") { UpdateController.shared.checkForUpdates() }
+            .disabled(!UpdateController.shared.isAvailable)
     }
 
     @ViewBuilder private var protectedList: some View {

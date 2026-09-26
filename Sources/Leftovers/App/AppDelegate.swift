@@ -18,6 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         WindowCoordinator.shared.store = store
         statusItem = StatusItemController(store: store)
         NSApp.mainMenu = MainMenu.make()
+        UpdateController.shared.start()
         if !UserDefaults.standard.bool(forKey: SettingsKey.hasCompletedOnboarding) {
             WindowCoordinator.shared.showWelcome()
         }

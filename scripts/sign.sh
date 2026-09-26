@@ -8,10 +8,18 @@ source packaging/release.env
 IDENTITY="${SIGNING_IDENTITY_OVERRIDE:-$SIGNING_IDENTITY}"
 APP="build/Leftovers.app"
 
+SPARKLE="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
 if [ "$IDENTITY" = "-" ]; then
-  codesign --force --sign - "$APP"
+  codesign --force --deep --sign - "$APP"
 else
-  codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP"
+  # Inside-out, as Sparkle documents: helpers first, then the framework, then the app.
+  SIGN=(codesign --force --options runtime --timestamp --sign "$IDENTITY")
+  "${SIGN[@]}" "$SPARKLE/XPCServices/Installer.xpc"
+  "${SIGN[@]}" --preserve-metadata=entitlements "$SPARKLE/XPCServices/Downloader.xpc"
+  "${SIGN[@]}" "$SPARKLE/Autoupdate"
+  "${SIGN[@]}" "$SPARKLE/Updater.app"
+  "${SIGN[@]}" "$APP/Contents/Frameworks/Sparkle.framework"
+  "${SIGN[@]}" "$APP"
 fi
-codesign --verify --strict --verbose=2 "$APP"
+codesign --verify --deep --strict --verbose=2 "$APP"
 codesign -dvv "$APP" 2>&1 | grep -E "Authority=Developer|TeamIdentifier|Runtime" || true

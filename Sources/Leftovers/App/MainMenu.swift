@@ -8,6 +8,7 @@ enum MainMenu {
     static func make() -> NSMenu {
         let main = NSMenu()
         main.addItem(submenu(title: "Leftovers", items: [
+            ActionMenuItem(title: "Check for Updates…") { UpdateController.shared.checkForUpdates() },
             ActionMenuItem(title: "Settings…", key: ",") { WindowCoordinator.shared.showSettings() },
             .separator(),
             NSMenuItem(title: "Quit Leftovers", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"),

@@ -18,7 +18,9 @@ notarized release, with credit to the reporter unless you prefer otherwise.
 
 ## What Leftovers does and doesn't do
 
-- It makes no network requests and collects no data.
+- It collects no data and has no telemetry. Its only network request is the update
+  check against `https://arpwal.github.io/leftovers/appcast.xml`, which can be turned off in
+  Settings. Updates install only if signed with the project's EdDSA key.
 - It never signals processes owned by root or other users, or core macOS
   processes (`Sources/Leftovers/Classification/ProtectionPolicy.swift`).
 - Before sending a signal it checks that the process is still the same one it

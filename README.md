@@ -119,7 +119,9 @@ and decide what to do. It's the same data the app shows.
 
 ## Privacy
 
-Leftovers makes no network requests and collects nothing. Everything it reads comes
+Leftovers collects nothing and has no telemetry. Its only network request is a daily update
+check (Sparkle, against this repository's release feed), which you can turn off in Settings.
+Everything it reads comes
 from the kernel on your Mac, and nothing leaves it.
 
 ## Build from source
