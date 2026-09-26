@@ -4,13 +4,13 @@
     <title>Leftovers</title>
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
-      <title>Leftovers 1.1.1</title>
-      <pubDate>Sat, 26 Sep 2026 23:09:57 +0000</pubDate>
-      <sparkle:version>4</sparkle:version>
-      <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
+      <title>Leftovers 1.1.2</title>
+      <pubDate>Sat, 26 Sep 2026 23:19:59 +0000</pubDate>
+      <sparkle:version>5</sparkle:version>
+      <sparkle:shortVersionString>1.1.2</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/arpwal/leftovers/releases/tag/v1.1.1</sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.1.1/Leftovers.zip" sparkle:edSignature="AGAYc37e5Fd+Wz/gJ9tBq9ttVsjAOCHdRSfoPA6+loI8KeurRgb/iDrEq00MIyISWhoOOIuS6VS8Uzeyeu+EAg==" length="2662310" type="application/octet-stream"/>
+      <sparkle:releaseNotesLink>https://github.com/arpwal/leftovers/releases/tag/v1.1.2</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.1.2/Leftovers.zip" sparkle:edSignature="kdpiaqOlI5b3kBnalh05z0aHLobopE/QumoHIRsBc2jDtCH7Kxa+pc3Vt+1FPFWxMiwb4Z+CiSNNQ1dzsiD9Cw==" length="2661693" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
