@@ -2,10 +2,10 @@
 # Renders design/<icon>.svg to packaging/AppIcon.icns (all macOS sizes).
 # Needs Google Chrome for SVG rendering (filters/blur); the .icns is committed,
 # so normal builds never need this script.
-# Usage: scripts/make-icon.sh [icon-a-glass-chip]
+# Usage: scripts/make-icon.sh [icon-c-pressure-dial]
 set -euo pipefail
 cd "$(dirname "$0")/.."
-ICON="${1:-icon-a-glass-chip}"
+ICON="${1:-icon-c-pressure-dial}"
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 

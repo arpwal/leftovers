@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Notarizes and staples build/MemoryJanitor.app, then produces the release
+# Notarizes and staples build/Leftovers.app, then produces the release
 # artifacts in dist/: a zip and a SHA-256 checksum.
 #
 # One-time setup (stores an app-specific password in your keychain):
-#   xcrun notarytool store-credentials memory-janitor \
+#   xcrun notarytool store-credentials leftovers \
 #     --apple-id <your Apple ID> --team-id <team id>
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source packaging/release.env
-APP="build/MemoryJanitor.app"
+APP="build/Leftovers.app"
 mkdir -p dist
-ZIP="dist/MemoryJanitor-$VERSION.zip"
+ZIP="dist/Leftovers-$VERSION.zip"
 
 # notarytool needs an archive; ditto keeps the bundle's signature intact.
 ditto -c -k --keepParent "$APP" "$ZIP"
