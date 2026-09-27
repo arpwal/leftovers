@@ -8,6 +8,9 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
     /// File-name form for `--snapshot`.
     var slug: String { rawValue }
 
+    /// Sections built from the live memory reading (refreshed every few seconds).
+    var usesMemoryReading: Bool { self != .worktrees && self != .scheduled }
+
     var title: String {
         switch self {
         case .leaks: return "Likely Leaks"
@@ -37,7 +40,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
         case .leaks: return "Memory held by processes that stopped doing useful work."
         case .apps: return "Every app with all of its helper processes, by memory."
         case .agents: return "Memory used by each coding-agent session and everything it started."
-        case .worktrees: return "Git worktrees agents left behind: merged ones are safe to remove."
+        case .worktrees: return "Git worktrees agents left behind. Ones whose work is already on main are safe to remove."
         case .scheduled: return "Background jobs in your account, including the ones Claude set up."
         case .processes: return "Your processes that you can quit."
         case .protected: return "macOS and system processes. Leftovers never quits these."

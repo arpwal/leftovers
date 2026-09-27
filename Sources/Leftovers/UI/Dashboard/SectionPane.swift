@@ -26,7 +26,7 @@ struct SectionPane: View {
             } else if let report = store.report {
                 content(report)
             } else {
-                LoadingState(text: "Reading processes…")
+                SkeletonRows()
             }
             if let message = store.lastActionMessage {
                 Text(message).font(.caption).foregroundStyle(.secondary)
@@ -51,7 +51,10 @@ struct SectionPane: View {
             if report.agentsReady {
                 AgentsTable(sessions: report.agents, duplicates: report.duplicateToolServers, store: store)
             } else {
-                LoadingState(text: "Reading agent sessions…")
+                VStack(alignment: .leading, spacing: 6) {
+                    ActivityPill(text: "Reading agent sessions", isDone: false)
+                    SkeletonRows(count: 5)
+                }
             }
         case .scheduled, .worktrees: EmptyView()   // rendered above; need no memory reading
         case .processes: ProcessTable(processes: store.userProcesses, store: store)

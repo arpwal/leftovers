@@ -11,8 +11,7 @@ enum UpdateCheckCommand {
     private static let timeout: TimeInterval = 90
     private static let reporter = Reporter()
 
-    static func runIfRequested() {
-        guard CommandLine.arguments.contains(flag) else { return }
+    static func runAndExit(install: Bool) {
         NSApplication.shared.setActivationPolicy(.prohibited)
         let updater = SPUUpdater(hostBundle: .main, applicationBundle: .main,
                                  userDriver: SPUStandardUserDriver(hostBundle: .main, delegate: nil),
@@ -26,7 +25,7 @@ enum UpdateCheckCommand {
         interval: \(Int(updater.updateCheckInterval))s, last check: \(updater.lastUpdateCheckDate.map { "\($0)" } ?? "never")
         can check now: \(updater.canCheckForUpdates)
         """)
-        if CommandLine.arguments.contains("--install") {
+        if install {
             // Temporarily allow a silent download; the user's setting is put back on exit.
             let previous = UserDefaults.standard.object(forKey: "SUAutomaticallyUpdate")
             atexit_b {

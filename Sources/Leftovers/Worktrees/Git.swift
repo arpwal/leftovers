@@ -2,8 +2,9 @@ import Foundation
 
 /// Runs git (and du) with a timeout; never throws, returns nil on failure.
 enum Git {
-    static func run(_ arguments: [String], in directory: String, timeout: TimeInterval = 10) -> String? {
-        run(executable: "/usr/bin/git", ["-C", directory] + arguments, timeout: timeout)
+    static func run(_ arguments: [String], in directory: String, timeout: TimeInterval = 10,
+                    environment: [String: String] = [:]) -> String? {
+        run(executable: "/usr/bin/git", ["-C", directory] + arguments, timeout: timeout, environment: environment)
     }
 
     /// Output plus success, for commands whose error text is worth showing.
@@ -20,10 +21,14 @@ enum Git {
         return (process.terminationStatus == 0, text.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    static func run(executable: String, _ arguments: [String], timeout: TimeInterval) -> String? {
+    static func run(executable: String, _ arguments: [String], timeout: TimeInterval,
+                    environment: [String: String] = [:]) -> String? {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: executable)
         process.arguments = arguments
+        if !environment.isEmpty {
+            process.environment = ProcessInfo.processInfo.environment.merging(environment) { $1 }
+        }
         let output = Pipe()
         process.standardOutput = output
         process.standardError = Pipe()

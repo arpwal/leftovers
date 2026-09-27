@@ -45,9 +45,12 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
     Agent, Aider, OpenCode), including everything it started, and the tool (MCP) servers
     that several sessions each run their own copy of.
   - **Worktrees**: git worktrees across your code folders. Ones whose work is already
-    on main (or whose branch was deleted on GitHub), with no uncommitted changes and
-    nothing working in them, are safe to remove, one at a time or all at once. Git
-    itself refuses to remove anything with uncommitted work, and branches are kept.
+    on main, including branches **squash-merged** on GitHub (which `git branch --merged`
+    can't see), with no uncommitted changes and nothing working in them, are safe to
+    remove, one at a time or all at once. Chips show how many are safe, have changes,
+    are in use or aren't on main yet, and always add up. The check is read-only: git
+    refuses to remove anything with uncommitted work, and branches are kept.
+  - **Every table sorts** by any column, and the last reading's age ticks live.
   - **Scheduled**: every background job (LaunchAgent) in your account, with a readable
     schedule, next run, and whether it's running, waiting, off or failing. Run now,
     pause, resume, view its log, or move it to the Trash. Jobs that agents created are

@@ -12,12 +12,27 @@ enum RepoFinder {
     static func repositories(alsoContaining directories: [String]) -> [String] {
         var found = Set<String>()
         for root in roots { scan(root, depth: 0, into: &found) }
-        for directory in directories {   // e.g. agent working folders
-            if let common = Git.run(["rev-parse", "--path-format=absolute", "--git-common-dir"], in: directory, timeout: 3) {
-                found.insert((common.trimmingCharacters(in: .whitespacesAndNewlines) as NSString).deletingLastPathComponent)
-            }
+        // Folders processes work in (often hundreds): only those not already
+        // inside a found repository need a git call, and they run in parallel.
+        let candidates = candidateFolders(directories, knownRepositories: found)
+        let lock = NSLock()
+        DispatchQueue.concurrentPerform(iterations: candidates.count) { index in
+            guard let common = Git.run(["rev-parse", "--path-format=absolute", "--git-common-dir"], in: candidates[index], timeout: 3)
+            else { return }
+            let repository = (common.trimmingCharacters(in: .whitespacesAndNewlines) as NSString).deletingLastPathComponent
+            lock.lock(); found.insert(repository); lock.unlock()
         }
         return found.sorted()
+    }
+
+    /// Unique folders under the home folder (not the home folder itself) that
+    /// aren't inside a repository we already know.
+    static func candidateFolders(_ directories: [String], knownRepositories: Set<String>,
+                                 home: String = NSHomeDirectory()) -> [String] {
+        Set(directories).filter { folder in
+            folder.hasPrefix(home + "/")
+                && !knownRepositories.contains { folder == $0 || folder.hasPrefix($0 + "/") }
+        }.sorted()
     }
 
     /// A `.git` *directory* marks a main checkout; linked worktrees have a

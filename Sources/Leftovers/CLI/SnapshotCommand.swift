@@ -15,13 +15,11 @@ enum SnapshotCommand {
     private static var windows: [NSWindow] = []
     private static let windowDelegate = SnapshotWindowDelegate()
 
-    static func runIfRequested() {
-        let arguments = CommandLine.arguments
-        guard let index = arguments.firstIndex(of: flag), index + 1 < arguments.count else { return }
-        let directory = URL(fileURLWithPath: arguments[index + 1], isDirectory: true)
+    static func runAndExit(directory path: String, redact: Bool) {
+        let directory = URL(fileURLWithPath: path, isDirectory: true)
         NSApplication.shared.setActivationPolicy(.prohibited)
         let store = MonitorStore()
-        if arguments.contains(redactFlag) {
+        if redact {
             var redactor = ReportRedactor(privateTerms: ["amaltash"])
             store.reportTransform = { redactor.redact($0) }
         }

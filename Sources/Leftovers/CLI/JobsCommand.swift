@@ -14,15 +14,14 @@ enum JobsCommand {
         let log: String?
     }
 
-    static func runIfRequested() {
-        guard CommandLine.arguments.contains(flag) else { return }
+    static func runAndExit(json: Bool) {
         let rows = ScheduledStore.readJobs().map {
             Row(label: $0.label, title: $0.title, schedule: JobScheduleText.describe($0.schedule), program: $0.program,
                 loaded: $0.isLoaded, running: $0.isRunning, addedByClaude: $0.isFromClaude,
                 lastExitStatus: $0.lastExitStatus, nextRun: JobScheduleText.nextRun($0.schedule, lastRun: $0.lastActivity),
                 endsOn: $0.metadata?.endsOn, plist: $0.plistPath, log: $0.logPath)
         }
-        print(CommandLine.arguments.contains("--json") ? json(rows) : text(rows))
+        print(json ? Self.json(rows) : text(rows))
         exit(0)
     }
 

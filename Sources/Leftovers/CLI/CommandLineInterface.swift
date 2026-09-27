@@ -15,10 +15,8 @@ enum CommandLineInterface {
     /// Gap between two samples, so CPU-based idleness is known.
     private static let sampleGap: Duration = .seconds(3)
 
-    /// Runs a command and exits, or returns immediately to launch the UI.
-    static func runIfRequested() {
-        let arguments = Set(CommandLine.arguments.dropFirst())
-        guard let command = Command.allCases.first(where: { arguments.contains($0.rawValue) }) else { return }
+    /// Runs a memory command and exits.
+    static func runAndExit(_ command: Command) {
         let done = DispatchSemaphore(value: 0)
         Task.detached {
             await run(command)

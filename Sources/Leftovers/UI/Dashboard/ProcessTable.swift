@@ -5,10 +5,11 @@ struct ProcessTable: View {
     let processes: [ClassifiedProcess]
     let store: MonitorStore
     @State private var selection = Set<ClassifiedProcess.ID>()
+    @State private var sortOrder = [KeyPathComparator(\ClassifiedProcess.sortMemory, order: .reverse)]
 
     var body: some View {
-        Table(processes, selection: $selection) {
-            TableColumn("Process") { process in
+        Table(processes.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("Process", value: \.sortName) { process in
                 HStack(spacing: 10) {
                     ProcessIcon(snapshot: process.snapshot, side: 22)
                     VStack(alignment: .leading, spacing: 1) {
@@ -21,13 +22,13 @@ struct ProcessTable: View {
                 }
             }
             .width(min: 160, ideal: 340)
-            TableColumn("Memory") { Text(Format.bytes($0.snapshot.footprintBytes)).monospacedDigit() }
+            TableColumn("Memory", value: \.sortMemory) { Text(Format.bytes($0.snapshot.footprintBytes)).monospacedDigit() }
                 .width(min: 64, ideal: 84)
-            TableColumn("In RAM") { Text(Format.bytes($0.snapshot.residentBytes)).monospacedDigit().foregroundStyle(.secondary) }
+            TableColumn("In RAM", value: \.sortRAM) { Text(Format.bytes($0.snapshot.residentBytes)).monospacedDigit().foregroundStyle(.secondary) }
                 .width(min: 60, ideal: 80)
-            TableColumn("CPU") { Text(Format.cpu($0.cpuPercent)).monospacedDigit() }
+            TableColumn("CPU", value: \.sortCPU) { Text(Format.cpu($0.cpuPercent)).monospacedDigit() }
                 .width(min: 40, ideal: 56)
-            TableColumn("Running") { Text(Format.age($0.snapshot.age)).monospacedDigit() }
+            TableColumn("Running", value: \.sortStarted) { Text(Format.age($0.snapshot.age)).monospacedDigit() }
                 .width(min: 50, ideal: 70)
             TableColumn("") { ProcessActions(store: store, process: $0) }
                 .width(min: 76, ideal: 90)

@@ -9,7 +9,12 @@ struct SectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(section.title).font(.system(size: 26, weight: .semibold))
-                Text(section.subtitle).foregroundStyle(.secondary).lineLimit(2)
+                HStack(spacing: 10) {
+                    Text(section.subtitle).foregroundStyle(.secondary).lineLimit(2)
+                    if section.usesMemoryReading {
+                        UpdatedAgo(date: store.report?.takenAt, isWorking: store.report == nil)
+                    }
+                }
             }
             Spacer()
             if section == .leaks {

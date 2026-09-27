@@ -5,6 +5,7 @@ import SwiftUI
 struct ScheduledTable: View {
     @ObservedObject var store: ScheduledStore
     @State private var selection = Set<ScheduledJob.ID>()
+    @State private var sortOrder = [KeyPathComparator(\ScheduledJob.sortNextRun)]
 
     var body: some View {
         Group {
@@ -27,15 +28,15 @@ struct ScheduledTable: View {
     }
 
     private var table: some View {
-        Table(store.jobs, selection: $selection) {
-            TableColumn("Job") { JobTitleCell(job: $0) }.width(min: 180, ideal: 300)
+        Table(store.jobs.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("Job", value: \.sortTitle) { JobTitleCell(job: $0) }.width(min: 180, ideal: 300)
             TableColumn("Schedule") { Text(JobScheduleText.describe($0.schedule)).lineLimit(1) }.width(min: 90, ideal: 150)
-            TableColumn("Next run") { job in
+            TableColumn("Next run", value: \.sortNextRun) { job in
                 Text(JobScheduleText.nextRun(job.schedule, lastRun: job.lastActivity).map { $0.formatted(.relative(presentation: .named)) } ?? "—")
                     .foregroundStyle(job.isLoaded ? .primary : .secondary).lineLimit(1)
             }
             .width(min: 70, ideal: 110)
-            TableColumn("Status") { JobStatusBadge(job: $0) }.width(min: 70, ideal: 90)
+            TableColumn("Status", value: \.sortStatus) { JobStatusBadge(job: $0) }.width(min: 70, ideal: 90)
             TableColumn("") { job in
                 Button(job.isLoaded ? "Pause" : "Resume") { toggle(job) }.controlSize(.small)
             }

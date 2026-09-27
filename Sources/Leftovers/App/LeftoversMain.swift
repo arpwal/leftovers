@@ -8,12 +8,19 @@ enum LeftoversMain {
     @MainActor
     static func main() {
         StartupTrace.mark("main")
-        Usage.handleHelpAndUnknownFlags()
-        CommandLineInterface.runIfRequested()
-        SnapshotCommand.runIfRequested()
-        UpdateCheckCommand.runIfRequested()
-        JobsCommand.runIfRequested()
-        WorktreesCommand.runIfRequested()
+        switch CommandRouter.command(for: CommandLine.arguments) {
+        case .app: break
+        case .help: print(Usage.text); exit(0)
+        case let .unknown(flag): Usage.fail("Unknown option \(flag)")
+        case let .missingValue(flag): Usage.fail("\(flag) needs a value")
+        case .memoryReport: CommandLineInterface.runAndExit(.report)
+        case .memoryJSON: CommandLineInterface.runAndExit(.json)
+        case .clean: CommandLineInterface.runAndExit(.clean)
+        case let .jobs(json): JobsCommand.runAndExit(json: json)
+        case let .worktrees(json): WorktreesCommand.runAndExit(json: json)
+        case let .checkUpdates(install): UpdateCheckCommand.runAndExit(install: install)
+        case let .snapshot(directory, redact): SnapshotCommand.runAndExit(directory: directory, redact: redact)
+        }
         StartupTrace.mark("command-line checks done")
         // Every command-line mode has exited by now; only the app gets here.
         SingleInstance.handOffIfAlreadyRunning()

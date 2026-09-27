@@ -7,6 +7,7 @@ struct AgentsTable: View {
     let duplicates: [DuplicatedToolServer]
     @ObservedObject var store: MonitorStore
     @State private var selection = Set<AgentSession.ID>()
+    @State private var sortOrder = [KeyPathComparator(\AgentSession.totalFootprint, order: .reverse)]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -40,23 +41,23 @@ struct AgentsTable: View {
     }
 
     private var table: some View {
-        Table(sessions, selection: $selection) {
-            TableColumn("Agent") { session in
+        Table(sessions.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("Agent", value: \.sortAgent) { session in
                 HStack(spacing: 10) {
                     AgentIcon(kind: session.kind, side: 22)
                     Text(session.kind.rawValue).fontWeight(.medium).lineLimit(1)
                 }
             }
             .width(min: 120, ideal: 160)
-            TableColumn("Project") { Text($0.project).lineLimit(1).help($0.root.workingDirectory ?? "") }
+            TableColumn("Project", value: \.sortProject) { Text($0.project).lineLimit(1).help($0.root.workingDirectory ?? "") }
                 .width(min: 70, ideal: 160)
-            TableColumn("Memory") { Text(Format.bytes($0.totalFootprint)).monospacedDigit() }
+            TableColumn("Memory", value: \.totalFootprint) { Text(Format.bytes($0.totalFootprint)).monospacedDigit() }
                 .width(min: 64, ideal: 84)
-            TableColumn("Processes") { Text("\($0.members.count)").monospacedDigit() }
+            TableColumn("Processes", value: \.memberCount) { Text("\($0.members.count)").monospacedDigit() }
                 .width(min: 40, ideal: 70)
-            TableColumn("Tool servers") { Text("\($0.toolServers.count)").monospacedDigit() }
+            TableColumn("Tool servers", value: \.toolServerCount) { Text("\($0.toolServers.count)").monospacedDigit() }
                 .width(min: 40, ideal: 80)
-            TableColumn("Running") { Text(Format.age($0.root.age)).monospacedDigit() }
+            TableColumn("Running", value: \.sortStarted) { Text(Format.age($0.root.age)).monospacedDigit() }
                 .width(min: 50, ideal: 70)
             TableColumn("") { session in Button("Quit") { quit(session) }.controlSize(.small) }
                 .width(min: 50, ideal: 56)

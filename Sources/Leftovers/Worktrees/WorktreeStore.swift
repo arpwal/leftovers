@@ -1,62 +1,68 @@
 import Foundation
 
-/// The Worktrees section's data, filled progressively: the list appears at
-/// once, then each worktree's status, then sizes, eight checks at a time,
-/// all off the main thread.
+/// The Worktrees section's data. Shows the last scan instantly, then runs
+/// one live pipeline: repositories are found, every worktree is listed, and
+/// status checks and size measurements run at the same time (8 in flight),
+/// each result landing in the table as soon as it's ready.
 @MainActor
 final class WorktreeStore: ObservableObject {
-    enum Phase: Equatable { case idle, finding, checking(done: Int, total: Int), measuring(done: Int, total: Int), done }
+    struct Progress: Equatable {
+        var isFinding = false
+        var repositories = 0
+        var total = 0
+        var checked = 0
+        var measured = 0
+        var isScanning: Bool { isFinding || checked < total || measured < total }
+    }
 
     static let shared = WorktreeStore()
     @Published private(set) var worktrees: [Worktree] = []
-    @Published private(set) var phase: Phase = .idle
+    @Published private(set) var progress = Progress()
     @Published private(set) var lastScan: Date?
     @Published var lastActionMessage: String?
-    private static let parallelism = 8
+    private let cache = WorktreeCache()
+    private static let inFlight = 8, sizesInFlight = 3
 
-    var safe: [Worktree] { worktrees.filter { if case .safe = $0.verdict { return true } else { return false } } }
-    var missingCount: Int { worktrees.filter { $0.verdict == .missing }.count }
-    var reclaimableBytes: UInt64 { worktrees.filter { $0.verdict.canRemove }.compactMap(\.sizeBytes).reduce(0, +) }
+    init() {
+        if let cached = cache.load() { worktrees = cached.worktrees; lastScan = cached.scannedAt }
+    }
+
+    var safe: [Worktree] { worktrees.filter { $0.verdict.category == .safe && !$0.isStale } }
+    var reclaimableBytes: UInt64 { worktrees.filter(\.verdict.canRemove).compactMap(\.sizeBytes).reduce(0, +) }
+    func count(_ category: WorktreeCategory) -> Int { worktrees.filter { $0.verdict.category == category }.count }
 
     /// `inUse` maps a working folder to who is using it ("Claude Code", "node").
     func scan(inUse: [String: String]) async {
-        guard phase == .idle || phase == .done else { return }
-        phase = .finding
-        let lists = await Task.detached(priority: .userInitiated) {
-            RepoFinder.repositories(alsoContaining: Array(inUse.keys)).flatMap(WorktreeScanner.list)
+        guard !progress.isScanning else { return }
+        progress = Progress(isFinding: true)
+        let (repos, listed) = await Task.detached(priority: .userInitiated) {
+            let repos = RepoFinder.repositories(alsoContaining: Array(inUse.keys))
+            return (repos.count, repos.flatMap(WorktreeScanner.list))
         }.value
-        worktrees = lists.map { tree in var t = tree; t.inUseBy = Self.user(of: t.path, in: inUse); t.verdict = WorktreeJudge.verdict(for: t); return t }
-        await check(inUse: inUse)
-        await measure()
-        phase = .done
+        let previous = Dictionary(worktrees.map { ($0.path, $0) }, uniquingKeysWith: { a, _ in a })
+        worktrees = listed.map { WorktreePipeline.carryOver(from: previous[$0.path], into: $0) }
+        progress = Progress(isFinding: false, repositories: repos, total: listed.count)
+        await WorktreePipeline.run(listed, inUse: inUse, inFlight: Self.inFlight, sizesInFlight: Self.sizesInFlight) { event in
+            switch event {
+            case let .checked(tree): self.replace(tree); self.progress.checked += 1
+            case let .measured(path, size): self.update(path) { $0.sizeBytes = size }; self.progress.measured += 1
+            }
+        }
         lastScan = Date()
+        cache.save(worktrees, scannedAt: lastScan ?? Date())
     }
 
-    private func check(inUse: [String: String]) async {
-        let pending = worktrees.filter { $0.verdict == .checking }.map(\.path)
-        var done = 0
-        phase = .checking(done: 0, total: pending.count)
-        await Self.forEach(pending, limit: Self.parallelism, work: { WorktreeScanner.changes(in: $0) }) { path, changes in
-            update(path) { $0.changes = changes ?? 0; $0.verdict = WorktreeJudge.verdict(for: $0) }
-            done += 1
-            phase = .checking(done: done, total: pending.count)
-        }
+    func forget(_ path: String) {
+        worktrees.removeAll { $0.path == path }
+        cache.save(worktrees, scannedAt: lastScan ?? Date())
     }
 
-    /// Sizes for removable worktrees first: that's what cleanup frees.
-    private func measure() async {
-        let order = worktrees.filter { !$0.isMain && !$0.isPrunable }
-            .sorted { ($0.verdict.canRemove ? 0 : 1) < ($1.verdict.canRemove ? 0 : 1) }.map(\.path)
-        var done = 0
-        phase = .measuring(done: 0, total: order.count)
-        await Self.forEach(order, limit: 4, work: { Git.size(of: $0) }) { path, size in
-            update(path) { $0.sizeBytes = size }
-            done += 1
-            phase = .measuring(done: done, total: order.count)
-        }
+    private func replace(_ tree: Worktree) {
+        guard let index = worktrees.firstIndex(where: { $0.path == tree.path }) else { return }
+        var fresh = tree
+        fresh.sizeBytes = fresh.sizeBytes ?? worktrees[index].sizeBytes   // keep a known size until re-measured
+        worktrees[index] = fresh
     }
-
-    func forget(_ path: String) { worktrees.removeAll { $0.path == path } }
 
     private func update(_ path: String, _ change: (inout Worktree) -> Void) {
         guard let index = worktrees.firstIndex(where: { $0.path == path }) else { return }
@@ -65,19 +71,5 @@ final class WorktreeStore: ObservableObject {
 
     nonisolated static func user(of path: String, in inUse: [String: String]) -> String? {
         inUse.first { $0.key == path || $0.key.hasPrefix(path + "/") }?.value
-    }
-
-    /// Runs `work` on each item off the main thread, at most `limit` at once,
-    /// delivering each result on the main actor as soon as it finishes.
-    private static func forEach<R: Sendable>(_ items: [String], limit: Int, work: @escaping @Sendable (String) -> R,
-                                             deliver: @MainActor (String, R) -> Void) async {
-        await withTaskGroup(of: (String, R).self) { group in
-            var next = items.makeIterator()
-            for _ in 0..<limit { if let item = next.next() { group.addTask { (item, work(item)) } } }
-            for await (item, result) in group {
-                deliver(item, result)
-                if let item = next.next() { group.addTask { (item, work(item)) } }
-            }
-        }
     }
 }

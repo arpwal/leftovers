@@ -7,10 +7,11 @@ struct AppsTable: View {
     let totalBytes: UInt64
     @ObservedObject var store: MonitorStore
     @State private var selection = Set<AppGroup.ID>()
+    @State private var sortOrder = [KeyPathComparator(\AppGroup.totalFootprint, order: .reverse)]
 
     var body: some View {
-        Table(groups, selection: $selection) {
-            TableColumn("App") { group in
+        Table(groups.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
+            TableColumn("App", value: \.sortName) { group in
                 HStack(spacing: 10) {
                     Image(nsImage: AppIconProvider.icon(atPath: group.bundlePath))
                         .resizable().interpolation(.high).frame(width: 22, height: 22)
@@ -18,15 +19,15 @@ struct AppsTable: View {
                 }
             }
             .width(min: 120, ideal: 220)
-            TableColumn("Memory") { Text(Format.bytes($0.totalFootprint)).monospacedDigit() }
+            TableColumn("Memory", value: \.totalFootprint) { Text(Format.bytes($0.totalFootprint)).monospacedDigit() }
                 .width(min: 64, ideal: 84)
-            TableColumn("Share of RAM") { group in
+            TableColumn("Share of RAM", value: \.totalFootprint) { group in
                 ShareBar(fraction: totalBytes == 0 ? 0 : Double(group.totalFootprint) / Double(totalBytes))
             }
             .width(min: 50, ideal: 140)
-            TableColumn("Processes") { Text("\($0.processes.count)").monospacedDigit() }
+            TableColumn("Processes", value: \.processCount) { Text("\($0.processes.count)").monospacedDigit() }
                 .width(min: 40, ideal: 70)
-            TableColumn("CPU") { Text(Format.cpu($0.totalCPU)).monospacedDigit() }
+            TableColumn("CPU", value: \.totalCPU) { Text(Format.cpu($0.totalCPU)).monospacedDigit() }
                 .width(min: 40, ideal: 56)
             TableColumn("") { group in
                 if canQuit(group) { Button("Quit") { quit(group) }.controlSize(.small) }

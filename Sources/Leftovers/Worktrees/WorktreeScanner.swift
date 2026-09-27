@@ -8,8 +8,9 @@ enum WorktreeScanner {
     static func list(repository: String) -> [Worktree] {
         guard let porcelain = Git.run(["worktree", "list", "--porcelain"], in: repository) else { return [] }
         let branches = BranchFacts.read(repository: repository)
+        // The first entry is the main checkout: context, not a candidate. Leave it out.
         return porcelain.components(separatedBy: "\n\n").enumerated().compactMap { index, block in
-            parse(block, repository: repository, isMain: index == 0, branches: branches)
+            index == 0 ? nil : parse(block, repository: repository, isMain: false, branches: branches)
         }
     }
 
@@ -17,6 +18,18 @@ enum WorktreeScanner {
     static func changes(in path: String) -> Int? {
         Git.run(["status", "--porcelain"], in: path, timeout: 20)
             .map { $0.split(separator: "\n").count }
+    }
+
+    /// The slow per-worktree checks, run in parallel by the caller:
+    /// uncommitted changes, and whether the branch was squash-merged.
+    static func check(_ tree: Worktree) -> Worktree {
+        var checked = tree
+        checked.changes = changes(in: tree.path) ?? 0
+        if let branch = tree.branch, !tree.isMerged, checked.changes == 0 {
+            checked.isSquashMerged = SquashMergeCheck.isSquashMerged(branch: branch, into: tree.mainRef,
+                                                                     repository: tree.repoRoot)
+        }
+        return checked
     }
 
     private static func parse(_ block: String, repository: String, isMain: Bool, branches: BranchFacts) -> Worktree? {
@@ -30,6 +43,7 @@ enum WorktreeScanner {
         guard let path else { return nil }
         var tree = Worktree(path: path, repoRoot: repository, branch: branch, isMain: isMain,
                             isLocked: locked, isPrunable: prunable)
+        tree.mainRef = branches.mainRef
         if let branch {
             tree.lastCommit = branches.lastCommit[branch]
             tree.isMerged = branches.merged.contains(branch)
@@ -41,6 +55,7 @@ enum WorktreeScanner {
 
 /// Per-branch facts for a whole repository, in three quick git calls.
 struct BranchFacts {
+    var mainRef = "main"
     var lastCommit: [String: Date] = [:]
     var merged: Set<String> = []
     var gone: Set<String> = []
@@ -60,6 +75,7 @@ struct BranchFacts {
         let remoteMain = Git.run(["symbolic-ref", "--short", "refs/remotes/origin/HEAD"], in: repository)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let localMain = ((remoteMain ?? "main") as NSString).lastPathComponent
+        facts.mainRef = remoteMain ?? localMain
         for target in [remoteMain, localMain].compactMap({ $0 }) {
             let merged = Git.run(["branch", "--merged", target, "--format=%(refname:short)"], in: repository) ?? ""
             facts.merged.formUnion(merged.split(separator: "\n").map(String.init))
