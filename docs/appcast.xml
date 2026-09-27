@@ -4,13 +4,13 @@
     <title>Leftovers</title>
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
-      <title>Leftovers 1.6.0</title>
-      <pubDate>Sun, 27 Sep 2026 02:31:07 +0000</pubDate>
-      <sparkle:version>12</sparkle:version>
-      <sparkle:shortVersionString>1.6.0</sparkle:shortVersionString>
+      <title>Leftovers 1.7.0</title>
+      <pubDate>Sun, 27 Sep 2026 06:15:42 +0000</pubDate>
+      <sparkle:version>13</sparkle:version>
+      <sparkle:shortVersionString>1.7.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<ul><li>See how healthy your Mac is with a new Overview section.</li><li>Preview your Mac's health score after a safe cleanup.</li><li>See what's holding your Mac back, with links.</li><li>Worktrees open faster by reusing recent scans.</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.6.0/Leftovers.zip" sparkle:edSignature="Xlp3iFMGWx/gPQm0+RfSuWJ1SDhXFvcIqgBWYYWjT8hQWT5J7x5cYRmftTg/bxL7ZnS+MM5pptyGFwHUsntACw==" length="3397156" type="application/octet-stream"/>
+      <description><![CDATA[<ul><li>Disk space now split into clear groups: system, apps, and yours</li><li>Clear developer caches that safely rebuild themselves</li><li>Clear per-app caches without closing files, just quit the app</li><li>See how much space you could get back</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.7.0/Leftovers.zip" sparkle:edSignature="dZqnxbq3Q5c0V7E4D7mD5mVMnpaPll4TCCOX7jy3A+tk2j3uSR4cOjMIclL1Mmq3igyD1RpNgXuttg1SMf4CBA==" length="3621187" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>

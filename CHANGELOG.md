@@ -2,6 +2,12 @@
 
 Written by Claude from each release's changes, in plain words.
 
+## 1.7.0 · September 26, 2026
+
+- See exactly what's eating your disk: system, apps, and your files.
+- Clean developer caches safely, only when nothing needs them.
+- Overview now counts cache clutter as space you can get back.
+
 ## 1.6.0 · September 26, 2026
 
 - See a strength score for your Mac, now and after cleanup
