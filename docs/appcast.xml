@@ -4,13 +4,13 @@
     <title>Leftovers</title>
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
-      <title>Leftovers 1.3.0</title>
-      <pubDate>Sun, 27 Sep 2026 00:15:17 +0000</pubDate>
-      <sparkle:version>9</sparkle:version>
-      <sparkle:shortVersionString>1.3.0</sparkle:shortVersionString>
+      <title>Leftovers 1.4.0</title>
+      <pubDate>Sun, 27 Sep 2026 01:27:59 +0000</pubDate>
+      <sparkle:version>10</sparkle:version>
+      <sparkle:shortVersionString>1.4.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/arpwal/leftovers/releases/tag/v1.3.0</sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.3.0/Leftovers.zip" sparkle:edSignature="gXPN56KwDB08dFmGzh5L+uB8GWFC72tDIEQNCG494rjRuMWb0kgINFm9Wc5wJe25IKBvSiUd+YZmllKz2yTkBw==" length="2902796" type="application/octet-stream"/>
+      <description><![CDATA[<ul><li>See leftover git worktrees and clean up the ones you're done with</li><li>Get a notification when an app update is ready</li><li>New Update Available item in the menu</li><li>Only one copy of Leftovers runs at a time</li><li>Release notes now come in plain words</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.4.0/Leftovers.zip" sparkle:edSignature="caRfzCSnn5sP/BsLa5gf6jyVXOF7rP10PUwbeL7LTBKE6kQNbD6eIjMElnl0vKOIdk/2DwKvKpTkOrQUapXTBw==" length="3129959" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>

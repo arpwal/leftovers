@@ -2,6 +2,14 @@
 
 Written by Claude from each release's changes, in plain words.
 
+## 1.4.0 · September 26, 2026
+
+- New Worktrees section finds old git worktrees you can clean up.
+- Remove one worktree, or clean up all the safe ones.
+- Get a notification when an update is ready.
+- New Update Available item in the menu.
+- Only one copy of Leftovers runs at a time.
+
 ## 1.3.0 · September 26, 2026
 
 - New Scheduled section lists all your background jobs in one place.
