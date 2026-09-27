@@ -4,6 +4,7 @@ import SwiftUI
 struct SidebarView: View {
     @EnvironmentObject private var store: MonitorStore
     @Binding var selection: DashboardSection
+    @ObservedObject private var scheduled = ScheduledStore.shared
     @Environment(\.isSnapshot) private var isSnapshot
 
     var body: some View {
@@ -27,6 +28,7 @@ struct SidebarView: View {
         case .leaks: return store.suspects.count
         case .apps: return store.appGroups.count
         case .agents: return store.report?.agents.count ?? 0
+        case .scheduled: return scheduled.jobs.count
         case .processes: return store.userProcesses.count
         case .protected: return 0
         }

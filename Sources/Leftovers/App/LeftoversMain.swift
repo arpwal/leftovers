@@ -12,6 +12,7 @@ enum LeftoversMain {
         StartupTrace.mark("command-line checks done")
         SnapshotCommand.runIfRequested()
         UpdateCheckCommand.runIfRequested()
+        JobsCommand.runIfRequested()
         // Start reading memory before AppKit sets up (~125 ms): the first
         // reading is then usually ready when the first window appears.
         let store = MonitorStore()

@@ -44,6 +44,10 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
     Agent, Aider, OpenCode), including everything it started, and the tool (MCP) servers
     that several sessions each run their own copy of.
+  - **Scheduled**: every background job (LaunchAgent) in your account, with a readable
+    schedule, next run, and whether it's running, waiting, off or failing. Run now,
+    pause, resume, view its log, or move it to the Trash. Jobs that agents created are
+    labelled, with what they're for and when they end.
   - **All Processes** and **Protected**.
 - **Clean Up**: quits every likely leak in one step, after a standard confirmation.
 - **Fast**: the window and the first reading appear in well under a second, and
@@ -61,6 +65,19 @@ App logos come from the apps installed on your Mac. Nothing is downloaded.
   <img src="docs/screenshots/leaks-light.png" width="49%" alt="Likely Leaks view">
   <img src="docs/screenshots/apps-dark.png" width="49%" alt="Apps view in dark mode">
 </p>
+
+### For agents that create background jobs
+
+If your agent sets up a LaunchAgent, leave a note beside it so people can see what
+it's for. Write `~/Library/Application Support/Leftovers/jobs/<label>.json`:
+
+```json
+{"purpose": "Nightly backup check", "createdBy": "Claude (Claude Code)",
+ "createdAt": "2026-09-26T23:00:00Z", "endsOn": "2026-10-31T23:59:00Z"}
+```
+
+Leftovers shows the purpose as the job's name, tags it with who created it, and shows
+when it ends.
 
 ## What counts as a leak
 
@@ -115,6 +132,7 @@ leftovers --report   # human-readable summary
 leftovers --json     # machine-readable report (stable field names)
 leftovers --clean    # quit every likely leak; protected processes are refused
 leftovers --check-updates   # updater state and a check against the live feed
+leftovers --jobs     # scheduled background jobs (add --json for agents)
 ```
 
 An agent can run `leftovers --json`, read `likelyLeaks` and `duplicateToolServers`,

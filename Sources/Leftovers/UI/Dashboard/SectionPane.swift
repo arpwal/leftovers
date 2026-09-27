@@ -4,6 +4,7 @@ import SwiftUI
 struct SectionPane: View {
     @EnvironmentObject private var store: MonitorStore
     let section: DashboardSection
+    @ObservedObject private var scheduled = ScheduledStore.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -11,7 +12,12 @@ struct SectionPane: View {
             if let system = store.system {
                 StatCards(system: system, reclaimableBytes: store.report.map { _ in store.reclaimableBytes })
             }
-            if let report = store.report {
+            if section == .scheduled {
+                ScheduledTable(store: scheduled)
+                if let message = scheduled.lastActionMessage {
+                    Text(message).font(.caption).foregroundStyle(.secondary)
+                }
+            } else if let report = store.report {
                 content(report)
             } else {
                 LoadingState(text: "Reading processes…")
@@ -41,6 +47,7 @@ struct SectionPane: View {
             } else {
                 LoadingState(text: "Reading agent sessions…")
             }
+        case .scheduled: EmptyView()   // rendered above; needs no memory reading
         case .processes: ProcessTable(processes: store.userProcesses, store: store)
         case .protected: ProcessTable(processes: store.protectedProcesses, store: store)
         }
