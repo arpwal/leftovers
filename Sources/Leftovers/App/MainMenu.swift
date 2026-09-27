@@ -10,6 +10,7 @@ enum MainMenu {
         main.addItem(submenu(title: "Leftovers", items: [
             NSMenuItem(title: "About Leftovers", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: ""),
             ActionMenuItem(title: "Check for Updates…") { UpdateController.shared.checkForUpdates() },
+            ActionMenuItem(title: "What's New in Leftovers…") { NSWorkspace.shared.open(AppLinks.changelog) },
             .separator(),
             ActionMenuItem(title: "Settings…", key: ",") { WindowCoordinator.shared.showSettings() },
             .separator(),

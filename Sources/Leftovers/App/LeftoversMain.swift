@@ -8,11 +8,15 @@ enum LeftoversMain {
     @MainActor
     static func main() {
         StartupTrace.mark("main")
+        Usage.handleHelpAndUnknownFlags()
         CommandLineInterface.runIfRequested()
-        StartupTrace.mark("command-line checks done")
         SnapshotCommand.runIfRequested()
         UpdateCheckCommand.runIfRequested()
         JobsCommand.runIfRequested()
+        WorktreesCommand.runIfRequested()
+        StartupTrace.mark("command-line checks done")
+        // Every command-line mode has exited by now; only the app gets here.
+        SingleInstance.handOffIfAlreadyRunning()
         // Start reading memory before AppKit sets up (~125 ms): the first
         // reading is then usually ready when the first window appears.
         let store = MonitorStore()

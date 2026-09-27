@@ -43,6 +43,14 @@ final class MonitorStore: ObservableObject {
     var suspects: [ClassifiedProcess] { visible.filter { $0.verdict.isSuspect } }
     var userProcesses: [ClassifiedProcess] { visible.filter { $0.verdict == .normal } }
     var protectedProcesses: [ClassifiedProcess] { visible.filter { !$0.verdict.isKillable } }
+    /// Folders something is working in right now, and who: agents first.
+    var workingFolders: [String: String] {
+        var folders: [String: String] = [:]
+        for process in report?.processes ?? [] { if let cwd = process.snapshot.workingDirectory, cwd != "/" { folders[cwd] = process.snapshot.name } }
+        for agent in report?.agents ?? [] { if let cwd = agent.root.workingDirectory { folders[cwd] = agent.kind.rawValue } }
+        return folders
+    }
+
     var appGroups: [AppGroup] { AppGroup.group(report?.processes ?? []) }
     var reclaimableBytes: UInt64 { suspects.reduce(0) { $0 + $1.snapshot.footprintBytes } }
 

@@ -35,6 +35,7 @@ enum SettingsKey {
     static let showReclaimableInMenuBar = "showReclaimableInMenuBar"
     static let hasCompletedOnboarding = "hasCompletedOnboarding"
     static let showInDock = "showInDock"
+    static let notifyAboutUpdates = "notifyAboutUpdates"
 }
 
 /// Typed reads for code that cannot use `@AppStorage` (delegate, store loop).
@@ -46,6 +47,10 @@ enum AppSettings {
     /// Shown in the Dock by default; the user can hide it in Settings.
     static var showInDock: Bool {
         UserDefaults.standard.object(forKey: SettingsKey.showInDock) as? Bool ?? true
+    }
+
+    static var notifyAboutUpdates: Bool {
+        UserDefaults.standard.object(forKey: SettingsKey.notifyAboutUpdates) as? Bool ?? true
     }
 
     static var activationPolicy: NSApplication.ActivationPolicy { showInDock ? .regular : .accessory }

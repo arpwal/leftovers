@@ -9,7 +9,7 @@ TAG="v$VERSION"
 PREVIOUS=$(git describe --tags --abbrev=0 2>/dev/null || true)
 NOTES="$(mktemp)"; trap 'rm -f "$NOTES"' EXIT
 
-git add packaging/release.env docs/appcast.xml
+git add packaging/release.env docs/appcast.xml CHANGELOG.md
 git commit -q -m "Release $TAG"
 git tag -s "$TAG" -m "Leftovers $VERSION"
 git push -q origin main "$TAG"
@@ -19,8 +19,10 @@ git push -q origin main "$TAG"
   echo
   echo "**Homebrew:** \`brew upgrade --cask arpwal/tap/leftovers\`"
   echo
-  echo "### Changes"
-  git log --pretty='- %s' "${PREVIOUS:+$PREVIOUS..}HEAD" | grep -v -E '^- Release v' || true
+  echo "### What's new"
+  cat dist/notes.md
+  echo
+  echo "[All changes](https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md)"
 } > "$NOTES"
 gh release create "$TAG" dist/Leftovers.dmg dist/Leftovers.zip dist/SHA256SUMS \
   --title "Leftovers $VERSION" --notes-file "$NOTES"

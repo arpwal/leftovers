@@ -18,6 +18,7 @@ let package = Package(
             path: "Sources/Leftovers",
             // Sparkle.framework is embedded in Contents/Frameworks by scripts/bundle.sh.
             linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]
-        )
+        ),
+        .testTarget(name: "LeftoversTests", dependencies: ["Leftovers"], path: "Tests/LeftoversTests"),
     ]
 )

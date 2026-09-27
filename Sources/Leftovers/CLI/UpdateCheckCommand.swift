@@ -27,6 +27,12 @@ enum UpdateCheckCommand {
         can check now: \(updater.canCheckForUpdates)
         """)
         if CommandLine.arguments.contains("--install") {
+            // Temporarily allow a silent download; the user's setting is put back on exit.
+            let previous = UserDefaults.standard.object(forKey: "SUAutomaticallyUpdate")
+            atexit_b {
+                if let previous { UserDefaults.standard.set(previous, forKey: "SUAutomaticallyUpdate") }
+                else { UserDefaults.standard.removeObject(forKey: "SUAutomaticallyUpdate") }
+            }
             updater.automaticallyDownloadsUpdates = true
             updater.checkForUpdatesInBackground()
         } else {

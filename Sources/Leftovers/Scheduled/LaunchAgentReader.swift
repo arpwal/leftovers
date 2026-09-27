@@ -2,12 +2,13 @@ import Foundation
 
 /// Reads the user's LaunchAgent property lists into `ScheduledJob`s.
 struct LaunchAgentReader {
-    static let directory = (NSHomeDirectory() as NSString).appendingPathComponent("Library/LaunchAgents")
+    static let userDirectory = (NSHomeDirectory() as NSString).appendingPathComponent("Library/LaunchAgents")
+    var directory = Self.userDirectory
 
     func jobs(status: [String: LaunchctlStatus.Entry], metadata: JobMetadataStore) -> [ScheduledJob] {
-        let files = (try? FileManager.default.contentsOfDirectory(atPath: Self.directory)) ?? []
+        let files = (try? FileManager.default.contentsOfDirectory(atPath: directory)) ?? []
         return files.filter { $0.hasSuffix(".plist") }
-            .compactMap { job(at: (Self.directory as NSString).appendingPathComponent($0), status: status, metadata: metadata) }
+            .compactMap { job(at: (directory as NSString).appendingPathComponent($0), status: status, metadata: metadata) }
             .sorted { ($0.isFromClaude ? 0 : 1, $0.label) < ($1.isFromClaude ? 0 : 1, $1.label) }
     }
 

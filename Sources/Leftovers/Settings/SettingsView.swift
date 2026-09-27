@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.refreshInterval) private var refreshInterval: RefreshInterval = .fiveSeconds
     @AppStorage(SettingsKey.showReclaimableInMenuBar) private var showReclaimable = true
     @AppStorage(SettingsKey.showInDock) private var showInDock = true
+    @AppStorage(SettingsKey.notifyAboutUpdates) private var notifyAboutUpdates = true
     @State private var openAtLogin = LoginItem.isEnabled
     @State private var loginError: String?
     @State private var checksForUpdates = UpdateController.shared.automaticallyChecks
@@ -56,8 +57,12 @@ struct SettingsView: View {
         Toggle("Check for updates automatically", isOn: $checksForUpdates)
             .onChange(of: checksForUpdates) { _, enabled in UpdateController.shared.automaticallyChecks = enabled }
             .disabled(!UpdateController.shared.isAvailable)
-        Button("Check for Updates…") { UpdateController.shared.checkForUpdates() }
-            .disabled(!UpdateController.shared.isAvailable)
+        Toggle("Notify me when an update is ready", isOn: $notifyAboutUpdates)
+        HStack {
+            Button("Check for Updates…") { UpdateController.shared.checkForUpdates() }
+                .disabled(!UpdateController.shared.isAvailable)
+            Link("What's New", destination: AppLinks.changelog)
+        }
     }
 
     @ViewBuilder private var protectedList: some View {

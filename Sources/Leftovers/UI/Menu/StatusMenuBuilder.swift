@@ -65,9 +65,13 @@ struct StatusMenuBuilder {
     }
 
     private func commandItems() -> [NSMenuItem] {
-        [
+        let update = UpdateController.shared.pendingVersion.map { version in
+            [ActionMenuItem(title: "Update Available: \(version)…") { UpdateController.shared.checkForUpdates() }] as [NSMenuItem]
+        } ?? []
+        return update + [
             ActionMenuItem(title: "Open Leftovers", key: "d") { windows.showDashboard() },
             ActionMenuItem(title: "Check for Updates…") { UpdateController.shared.checkForUpdates() },
+            ActionMenuItem(title: "What's New…") { NSWorkspace.shared.open(AppLinks.changelog) },
             ActionMenuItem(title: "Settings…", key: ",") { windows.showSettings() },
             .separator(),
             ActionMenuItem(title: "Quit Leftovers", key: "q") { QuitController.quitCompletely() },

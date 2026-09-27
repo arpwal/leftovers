@@ -15,6 +15,7 @@ if [ "${BUMP:-}" != "none" ]; then
   [ "$(git branch --show-current)" = "main" ] || { echo "Release from main."; exit 1; }
   git pull -q --ff-only
   echo "Releasing $(scripts/bump-version.sh "$PART")"
+  scripts/make-changelog.sh   # Claude summarises the commits since the last release
 fi
 
 scripts/bundle.sh

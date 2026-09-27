@@ -44,6 +44,10 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
     Agent, Aider, OpenCode), including everything it started, and the tool (MCP) servers
     that several sessions each run their own copy of.
+  - **Worktrees**: git worktrees across your code folders. Ones whose work is already
+    on main (or whose branch was deleted on GitHub), with no uncommitted changes and
+    nothing working in them, are safe to remove, one at a time or all at once. Git
+    itself refuses to remove anything with uncommitted work, and branches are kept.
   - **Scheduled**: every background job (LaunchAgent) in your account, with a readable
     schedule, next run, and whether it's running, waiting, off or failing. Run now,
     pause, resume, view its log, or move it to the Trash. Jobs that agents created are
@@ -55,8 +59,10 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
 - **Dock and menu bar**: a normal Dock app with a menu-bar dial. Hide the Dock icon
   in Settings to keep just the dial. ⌘Q closes the window and Leftovers keeps
   watching; **Quit Leftovers** in the menu quits completely.
-- **Settings**: Dock icon, close behavior, open at login, updates, refresh interval,
-  menu-bar display, and your protected apps.
+- **Settings**: Dock icon, close behavior, open at login, updates (with a notification
+  when one is ready), refresh interval, menu-bar display, and your protected apps.
+- **What's new**: every release has short, plain notes in [CHANGELOG.md](CHANGELOG.md),
+  written by Claude from the release's changes.
 - **Command line for agents**: the same engine and safety rules, as text or JSON.
 
 App logos come from the apps installed on your Mac. Nothing is downloaded.
@@ -137,6 +143,8 @@ leftovers --json     # machine-readable report (stable field names)
 leftovers --clean    # quit every likely leak; protected processes are refused
 leftovers --check-updates   # updater state and a check against the live feed
 leftovers --jobs     # scheduled background jobs (add --json for agents)
+leftovers --worktrees   # git worktrees and which are safe to remove (add --json)
+leftovers --help     # every command
 ```
 
 An agent can run `leftovers --json`, read `likelyLeaks` and `duplicateToolServers`,
@@ -156,7 +164,8 @@ swift build                    # debug build
 swift run Leftovers        # run the menu-bar app
 scripts/bundle.sh              # universal release .app in build/
 SIGNING_IDENTITY_OVERRIDE=- scripts/sign.sh   # ad-hoc sign for local use
-scripts/install-local.sh       # copy to ~/Applications and launch
+scripts/install-local.sh       # install (one copy only) and launch
+swift test                     # unit tests, plus integration tests against real git
 ```
 
 Maintainers: `scripts/release.sh` bumps the version (patch by default; pass `minor` or `major`), builds, notarizes and staples the app and DMG, publishes the GitHub release, updates the Homebrew tap and verifies the live download. Commits and tags are signed.

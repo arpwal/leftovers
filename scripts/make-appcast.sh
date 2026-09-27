@@ -7,6 +7,8 @@ cd "$(dirname "$0")/.."
 source packaging/release.env
 SIGNATURE=$(.build/artifacts/sparkle/Sparkle/bin/sign_update --account leftovers dist/Leftovers.zip)
 URL="https://github.com/arpwal/leftovers/releases/download/v$VERSION/Leftovers.zip"
+# The short plain-language notes, shown inside Sparkle's update window.
+NOTES_HTML="<ul>$(sed -n 's/^- \(.*\)$/<li>\1<\/li>/p' dist/notes.md 2>/dev/null | tr -d '\n')</ul>"
 cat > docs/appcast.xml <<XML
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
@@ -19,7 +21,7 @@ cat > docs/appcast.xml <<XML
       <sparkle:version>$BUILD</sparkle:version>
       <sparkle:shortVersionString>$VERSION</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/arpwal/leftovers/releases/tag/v$VERSION</sparkle:releaseNotesLink>
+      <description><![CDATA[$NOTES_HTML<p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
       <enclosure url="$URL" $SIGNATURE type="application/octet-stream"/>
     </item>
   </channel>

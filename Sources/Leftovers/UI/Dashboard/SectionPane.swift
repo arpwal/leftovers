@@ -5,6 +5,7 @@ struct SectionPane: View {
     @EnvironmentObject private var store: MonitorStore
     let section: DashboardSection
     @ObservedObject private var scheduled = ScheduledStore.shared
+    @ObservedObject private var worktrees = WorktreeStore.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -12,7 +13,12 @@ struct SectionPane: View {
             if let system = store.system {
                 StatCards(system: system, reclaimableBytes: store.report.map { _ in store.reclaimableBytes })
             }
-            if section == .scheduled {
+            if section == .worktrees {
+                WorktreesView(store: worktrees, monitor: store)
+                if let message = worktrees.lastActionMessage {
+                    Text(message).font(.caption).foregroundStyle(.secondary)
+                }
+            } else if section == .scheduled {
                 ScheduledTable(store: scheduled)
                 if let message = scheduled.lastActionMessage {
                     Text(message).font(.caption).foregroundStyle(.secondary)
@@ -47,7 +53,7 @@ struct SectionPane: View {
             } else {
                 LoadingState(text: "Reading agent sessions…")
             }
-        case .scheduled: EmptyView()   // rendered above; needs no memory reading
+        case .scheduled, .worktrees: EmptyView()   // rendered above; need no memory reading
         case .processes: ProcessTable(processes: store.userProcesses, store: store)
         case .protected: ProcessTable(processes: store.protectedProcesses, store: store)
         }
