@@ -2,7 +2,7 @@ import Foundation
 
 /// The dashboard's sidebar destinations.
 enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
-    case leaks, apps, agents, worktrees, scheduled, processes, protected
+    case overview, leaks, apps, agents, worktrees, scheduled, processes, protected
 
     var id: String { rawValue }
     /// File-name form for `--snapshot`.
@@ -13,6 +13,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
 
     var title: String {
         switch self {
+        case .overview: return "Overview"
         case .leaks: return "Likely Leaks"
         case .apps: return "Apps"
         case .agents: return "Agents"
@@ -25,6 +26,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
 
     var symbol: String {
         switch self {
+        case .overview: return "gauge.with.dots.needle.67percent"
         case .leaks: return "drop.triangle"
         case .apps: return "square.grid.2x2"
         case .agents: return "sparkles"
@@ -37,6 +39,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
 
     var subtitle: String {
         switch self {
+        case .overview: return "How much of your Mac's strength leftovers are using, and what cleanup gives back."
         case .leaks: return "Memory held by processes that stopped doing useful work."
         case .apps: return "Every app with all of its helper processes, by memory."
         case .agents: return "Memory used by each coding-agent session and everything it started."

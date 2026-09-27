@@ -24,6 +24,12 @@ enum SnapshotCommand {
             store.reportTransform = { redactor.redact($0) }
         }
         RunLoop.main.run(until: Date().addingTimeInterval(warmUp))
+        // Worktrees need a finished scan (~30 s on a busy machine), not a half-done one.
+        let worktrees = WorktreeStore.shared
+        Task { await worktrees.scan(inUse: store.workingFolders) }
+        let deadline = Date().addingTimeInterval(180)
+        repeat { RunLoop.main.run(until: Date().addingTimeInterval(0.5)) } while worktrees.progress.isScanning && Date() < deadline
+        if redact { worktrees.showForSnapshot(WorktreeRedactor.redact(worktrees.worktrees)) }
         for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
             renderAll(store: store, appearance: appearance, suffix: name, into: directory)
         }

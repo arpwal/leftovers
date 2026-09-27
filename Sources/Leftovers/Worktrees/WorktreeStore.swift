@@ -31,6 +31,16 @@ final class WorktreeStore: ObservableObject {
     var reclaimableBytes: UInt64 { worktrees.filter(\.verdict.canRemove).compactMap(\.sizeBytes).reduce(0, +) }
     func count(_ category: WorktreeCategory) -> Int { worktrees.filter { $0.verdict.category == category }.count }
 
+    /// Scans unless a complete scan finished in the last two minutes (opening
+    /// the section again shouldn't re-run ~30 s of git work).
+    func scanIfStale(monitor: MonitorStore, maxAge: TimeInterval = 120) async {
+        let hasStaleRows = worktrees.contains(where: \.isStale)
+        if let lastScan, Date().timeIntervalSince(lastScan) < maxAge, !hasStaleRows { return }
+        // Wait briefly for the first memory reading: it says which folders are in use.
+        for _ in 0..<30 where monitor.report == nil { try? await Task.sleep(for: .milliseconds(100)) }
+        await scan(inUse: monitor.workingFolders)
+    }
+
     /// `inUse` maps a working folder to who is using it ("Claude Code", "node").
     func scan(inUse: [String: String]) async {
         guard !progress.isScanning else { return }
@@ -51,6 +61,9 @@ final class WorktreeStore: ObservableObject {
         lastScan = Date()
         cache.save(worktrees, scannedAt: lastScan ?? Date())
     }
+
+    /// For `--snapshot --redact`: replace what's shown (never saved to the cache).
+    func showForSnapshot(_ trees: [Worktree]) { worktrees = trees }
 
     func forget(_ path: String) {
         worktrees.removeAll { $0.path == path }

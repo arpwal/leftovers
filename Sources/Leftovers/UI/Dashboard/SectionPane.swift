@@ -10,7 +10,7 @@ struct SectionPane: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             SectionHeader(section: section)
-            if let system = store.system {
+            if let system = store.system, section != .overview {
                 StatCards(system: system, reclaimableBytes: store.report.map { _ in store.reclaimableBytes })
             }
             if section == .worktrees {
@@ -38,6 +38,9 @@ struct SectionPane: View {
 
     @ViewBuilder private func content(_ report: MemoryReport) -> some View {
         switch section {
+        case .overview:
+            OverviewView(store: store, worktrees: worktrees, jobs: scheduled)
+                .task { await worktrees.scanIfStale(monitor: store); await scheduled.reload() }
         case .leaks:
             if store.suspects.isEmpty {
                 ContentUnavailableView("No Leaks Found", systemImage: "checkmark.seal",

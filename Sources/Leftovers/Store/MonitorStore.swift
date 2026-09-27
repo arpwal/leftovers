@@ -12,7 +12,7 @@ final class MonitorStore: ObservableObject {
     @Published private(set) var lastActionMessage: String?
     @Published private(set) var busyIdentities: Set<ProcessIdentity> = []
     /// Which sidebar destination the dashboard shows; the menu can deep-link here.
-    @Published var dashboardSection: DashboardSection = .leaks
+    @Published var dashboardSection: DashboardSection = .overview
 
     nonisolated private let engine = SampleEngine()
     private let terminator = ProcessTerminator()

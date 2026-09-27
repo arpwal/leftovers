@@ -83,7 +83,7 @@ footer a{color:var(--muted)}
   <header class="hero">
     <img class="icon" src="assets/icon.png" alt="Leftovers app icon: a memory pressure dial">
     <h1>Clean up what your apps and agents left running.</h1>
-    <p class="lede">A free, open-source menu-bar app for macOS. It finds the dev servers, MCP servers and leaked helpers still holding memory, and quits them safely.</p>
+    <p class="lede">A free, open-source Mac app. It finds the dev servers, MCP servers, git worktrees and background jobs your apps and agents left behind, shows what they cost you, and cleans them up safely.</p>
     <div class="actions">
       <a class="btn primary" href="https://github.com/arpwal/leftovers/releases/latest/download/Leftovers.dmg">Download for Mac</a>
       <a class="btn" href="https://github.com/arpwal/leftovers">View on GitHub</a>
@@ -91,6 +91,17 @@ footer a{color:var(--muted)}
     <p class="fine">macOS 14 or later · Apple silicon and Intel · Signed and notarized · MIT license</p>
     <img class="shot" src="screenshots/agents-light.png" alt="Leftovers showing memory used by each coding-agent session and the MCP servers they duplicate">
   </header>
+
+  <section id="overview">
+    <div class="story">
+      <div class="section-head" style="margin:0">
+        <h2>How strong is your Mac right now?</h2>
+        <p class="muted">Leftovers adds up what the leftovers are costing you in memory, swap and disk, and shows your Mac's strength now next to what a safe cleanup gives back. On the Mac it was built on: 41% now, 56% after cleanup.</p>
+        <p class="muted">It's an honest estimate, with the formula one click away: half memory available, a third swap, a fifth free disk.</p>
+      </div>
+      <img src="screenshots/overview-light.png" alt="Overview: strength 41% now and 56% after cleanup, with memory and disk bars and what's holding the Mac back">
+    </div>
+  </section>
 
   <section id="why">
     <div class="section-head">
@@ -135,7 +146,8 @@ footer a{color:var(--muted)}
       <div class="card"><h3>Likely leaks</h3><p>Idle processes holding memory they don't use, each with a plain-language reason and a Quit button.</p></div>
       <div class="card"><h3>Apps, with their logos</h3><p>Every app with all of its helper processes added up, so the one hogging memory has a face.</p></div>
       <div class="card"><h3>Agents</h3><p>Memory for each Claude Code, Codex, Gemini CLI, Cursor Agent, Aider or OpenCode session, and everything it started.</p></div>
-      <div class="card"><h3>Worktree cleanup</h3><p>Finds git worktrees whose work is already on main and removes them, one by one or all at once. Never ones with uncommitted work.</p></div>
+      <div class="card"><h3>Your Mac's strength</h3><p>Memory, swap and disk in one score, now and after a safe cleanup, with the formula shown.</p></div>
+      <div class="card"><h3>Worktree cleanup</h3><p>Finds git worktrees whose work is already on main, squash merges included, and removes them one by one or all at once.</p></div>
       <div class="card"><h3>Scheduled jobs</h3><p>Every background job with its schedule, next run and status, and which agent set it up.</p></div>
       <div class="card"><h3>One-step cleanup</h3><p>Quit every likely leak at once, after a standard confirmation that lists what will stop.</p></div>
       <div class="card"><h3>Fast and light</h3><p>Open to numbers in well under a second, and each refresh shows how long it took. About 22 MB and no CPU at idle.</p></div>
@@ -145,6 +157,19 @@ footer a{color:var(--muted)}
       <img src="screenshots/leaks-light.png" alt="Likely Leaks view">
       <img src="screenshots/apps-dark.png" alt="Apps view in dark mode">
     </div>
+  </section>
+
+  <section id="worktrees">
+    <div class="section-head">
+      <h2>The worktrees your agents forgot.</h2>
+      <p class="muted">Agents open a git worktree per task and rarely clean up. Leftovers checks every one: is its work already on main, does it have uncommitted changes, is anything still working in it. It even spots branches that were squash-merged on GitHub, which git itself can't see.</p>
+    </div>
+    <div class="problems" style="margin-bottom:24px">
+      <div class="card"><div class="big">54 <small>of 78 worktrees already on main</small></div><p class="muted">51 of them squash-merged on GitHub. Removable in one step.</p></div>
+      <div class="card"><div class="big">55 GB <small>of disk given back</small></div><p class="muted">Each worktree carries its own dependencies and build output.</p></div>
+      <div class="card"><div class="big">0 <small>uncommitted changes ever lost</small></div><p class="muted">The check is read-only, and git refuses to remove a worktree with unsaved work. Branches are kept.</p></div>
+    </div>
+    <img class="shot" src="screenshots/worktrees-light.png" alt="Worktrees view: status chips (safe to remove, has changes, not on main yet) and a sortable table">
   </section>
 
   <section id="scheduled">
@@ -173,7 +198,8 @@ ln -s /Applications/Leftovers.app/Contents/MacOS/Leftovers ~/.local/bin/leftover
 leftovers --report   <span class="c"># readable summary</span>
 leftovers --json     <span class="c"># likelyLeaks, agents, duplicateToolServers</span>
 leftovers --clean    <span class="c"># quit likely leaks; protected processes are refused</span>
-leftovers --jobs     <span class="c"># scheduled background jobs (add --json)</span></pre>
+leftovers --jobs     <span class="c"># scheduled background jobs (add --json)</span>
+leftovers --worktrees <span class="c"># git worktrees and which are safe to remove (add --json)</span></pre>
     <p class="muted" style="margin-top:14px;max-width:68ch">Agents that schedule a job can leave a one-line note in <code>~/Library/Application Support/Leftovers/jobs/&lt;label&gt;.json</code> (purpose, creator, end date), and Leftovers labels the job with it.</p>
   </section>
 

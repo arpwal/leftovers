@@ -38,7 +38,9 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
 - **Menu bar**: a dial whose needle shows memory in use, and a standard macOS menu:
   memory and swap bars at the top, then likely leaks, the apps using the most memory,
   and your agents, each with its real logo.
-- **Dashboard**: a sidebar window with five views.
+- **Overview**: your Mac's strength now and after a safe cleanup (memory, swap and disk,
+  with the formula shown), memory and disk bars, and what's holding it back.
+- **Dashboard**: a sidebar window with these views.
   - **Likely Leaks**: each one with a plain-language reason and a Quit button.
   - **Apps**: every app with all of its helper processes summed, with the app's own icon.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
@@ -71,7 +73,12 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
 App logos come from the apps installed on your Mac. Nothing is downloaded.
 
 <p align="center">
-  <img src="docs/screenshots/scheduled-light.png" width="820" alt="Scheduled view: background jobs, two added by Claude">
+  <img src="docs/screenshots/overview-light.png" width="820" alt="Overview: your Mac's strength now and after cleanup">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/worktrees-light.png" width="49%" alt="Worktrees view">
+  <img src="docs/screenshots/scheduled-light.png" width="49%" alt="Scheduled view">
 </p>
 
 <p align="center">

@@ -24,11 +24,7 @@ struct WorktreesView: View {
                 WorktreeTable(store: store, monitor: monitor, filter: filter, selection: $selection)
             }
         }
-        .task {
-            // Wait briefly for the first memory reading: it says which folders are in use.
-            for _ in 0..<30 where monitor.report == nil { try? await Task.sleep(for: .milliseconds(100)) }
-            await store.scan(inUse: monitor.workingFolders)
-        }
+        .task { await store.scanIfStale(monitor: monitor) }
     }
 
     private var activityStrip: some View {

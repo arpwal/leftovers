@@ -26,6 +26,7 @@ struct SidebarView: View {
 
     private func count(for section: DashboardSection) -> Int {
         switch section {
+        case .overview: return 0
         case .leaks: return store.suspects.count
         case .apps: return store.appGroups.count
         case .agents: return store.report?.agents.count ?? 0
