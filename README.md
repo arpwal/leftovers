@@ -62,6 +62,10 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
 App logos come from the apps installed on your Mac. Nothing is downloaded.
 
 <p align="center">
+  <img src="docs/screenshots/scheduled-light.png" width="820" alt="Scheduled view: background jobs, two added by Claude">
+</p>
+
+<p align="center">
   <img src="docs/screenshots/leaks-light.png" width="49%" alt="Likely Leaks view">
   <img src="docs/screenshots/apps-dark.png" width="49%" alt="Apps view in dark mode">
 </p>
