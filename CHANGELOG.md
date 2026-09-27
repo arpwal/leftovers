@@ -2,6 +2,13 @@
 
 Written by Claude from each release's changes, in plain words.
 
+## 1.6.0 · September 26, 2026
+
+- See a strength score for your Mac, now and after cleanup
+- New Overview section shows memory and disk use in bars
+- See what's holding your Mac back, with links to fix it
+- Worktrees opens faster by reusing a recent scan
+
 ## 1.5.0 · September 26, 2026
 
 - Worktree list now spots branches already merged into main.
