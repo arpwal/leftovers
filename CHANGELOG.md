@@ -2,6 +2,14 @@
 
 Written by Claude from each release's changes, in plain words.
 
+## 1.5.0 · September 26, 2026
+
+- Worktree list now spots branches already merged into main.
+- Main folders no longer clutter the worktree list.
+- Click any column header to sort a table.
+- Results show instantly, then update live.
+- Fixed worktree and job reports showing the wrong output.
+
 ## 1.4.0 · September 26, 2026
 
 - New Worktrees section finds old git worktrees you can clean up.

@@ -4,13 +4,13 @@
     <title>Leftovers</title>
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
-      <title>Leftovers 1.4.0</title>
-      <pubDate>Sun, 27 Sep 2026 01:27:59 +0000</pubDate>
-      <sparkle:version>10</sparkle:version>
-      <sparkle:shortVersionString>1.4.0</sparkle:shortVersionString>
+      <title>Leftovers 1.5.0</title>
+      <pubDate>Sun, 27 Sep 2026 02:17:48 +0000</pubDate>
+      <sparkle:version>11</sparkle:version>
+      <sparkle:shortVersionString>1.5.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<ul><li>See leftover git worktrees and clean up the ones you're done with</li><li>Get a notification when an app update is ready</li><li>New Update Available item in the menu</li><li>Only one copy of Leftovers runs at a time</li><li>Release notes now come in plain words</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.4.0/Leftovers.zip" sparkle:edSignature="caRfzCSnn5sP/BsLa5gf6jyVXOF7rP10PUwbeL7LTBKE6kQNbD6eIjMElnl0vKOIdk/2DwKvKpTkOrQUapXTBw==" length="3129959" type="application/octet-stream"/>
+      <description><![CDATA[<ul><li>Worktrees merged through GitHub squash merges are now spotted as safe to clean.</li><li>Main checkouts no longer clutter the worktree list.</li><li>Click any column header to sort a table.</li><li>Your last scan shows instantly while a fresh one loads.</li><li>Live counters show progress as Leftovers checks your worktrees.</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.5.0/Leftovers.zip" sparkle:edSignature="JNAf+dFjt8YwICkqGyaNfviknEnJ6jZYvWdgEx78XXtNMGOuWKo9ZQjqRQDa6PVlLQLQXqKIo+5XbchM93M2AQ==" length="3292235" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
