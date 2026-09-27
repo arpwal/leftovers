@@ -12,11 +12,13 @@ struct UsageCard: View {
     let title: String
     let total: UInt64
     let segments: [Segment]
+    var caption: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(title).font(.headline)
+                if let caption { Text(caption).font(.callout).monospacedDigit().foregroundStyle(.secondary).lineLimit(1) }
                 Spacer()
                 Text(Format.bytes(total)).foregroundStyle(.secondary).monospacedDigit()
             }

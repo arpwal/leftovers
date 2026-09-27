@@ -96,10 +96,10 @@ footer a{color:var(--muted)}
     <div class="story">
       <div class="section-head" style="margin:0">
         <h2>How strong is your Mac right now?</h2>
-        <p class="muted">Leftovers adds up what the leftovers are costing you in memory, swap and disk, and shows your Mac's strength now next to what a safe cleanup gives back. On the Mac it was built on: 41% now, 56% after cleanup.</p>
+        <p class="muted">Leftovers adds up what the leftovers are costing you in memory, swap and disk, and shows your Mac's strength now next to what a safe cleanup gives back. On the Mac it was built on: 41% now, 68% after cleanup.</p>
         <p class="muted">It's an honest estimate, with the formula one click away: half memory available, a third swap, a fifth free disk.</p>
       </div>
-      <img src="screenshots/overview-light.png" alt="Overview: strength 41% now and 56% after cleanup, with memory and disk bars and what's holding the Mac back">
+      <img src="screenshots/overview-light.png" alt="Overview: strength 41% now and 68% after cleanup, with memory and disk bars and what's holding the Mac back">
     </div>
   </section>
 
@@ -147,6 +147,7 @@ footer a{color:var(--muted)}
       <div class="card"><h3>Apps, with their logos</h3><p>Every app with all of its helper processes added up, so the one hogging memory has a face.</p></div>
       <div class="card"><h3>Agents</h3><p>Memory for each Claude Code, Codex, Gemini CLI, Cursor Agent, Aider or OpenCode session, and everything it started.</p></div>
       <div class="card"><h3>Your Mac's strength</h3><p>Memory, swap and disk in one score, now and after a safe cleanup, with the formula shown.</p></div>
+      <div class="card"><h3>Disk, split three ways</h3><p>How much is macOS, how much your apps and their data, how much is yours. Then clear the developer caches that rebuild themselves.</p></div>
       <div class="card"><h3>Worktree cleanup</h3><p>Finds git worktrees whose work is already on main, squash merges included, and removes them one by one or all at once.</p></div>
       <div class="card"><h3>Scheduled jobs</h3><p>Every background job with its schedule, next run and status, and which agent set it up.</p></div>
       <div class="card"><h3>One-step cleanup</h3><p>Quit every likely leak at once, after a standard confirmation that lists what will stop.</p></div>
@@ -156,6 +157,17 @@ footer a{color:var(--muted)}
     <div class="pair" style="margin-top:28px">
       <img src="screenshots/leaks-light.png" alt="Likely Leaks view">
       <img src="screenshots/apps-dark.png" alt="Apps view in dark mode">
+    </div>
+  </section>
+
+  <section id="disk">
+    <div class="story">
+      <div class="section-head" style="margin:0">
+        <h2>Where did the disk go?</h2>
+        <p class="muted">Leftovers splits your disk three ways: macOS itself, the apps you installed with their data and caches, and your own files. Then it offers the caches that rebuild themselves. On the Mac it was built on, Xcode alone was keeping 93 GB of old build files.</p>
+        <p class="muted">A cache is only emptied while nothing using it runs, and your code and documents are never touched.</p>
+      </div>
+      <img src="screenshots/disk-light.png" alt="Disk: system, apps and your files on one bar, and developer caches you can empty">
     </div>
   </section>
 

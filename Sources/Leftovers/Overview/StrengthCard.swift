@@ -31,7 +31,7 @@ struct StrengthCard: View {
 
     private var sentence: String {
         if model.after <= model.now { return "Nothing left behind is slowing your Mac right now." }
-        return "Leftovers are holding \(Format.bytes(model.leakBytes)) of memory and \(Format.bytes(model.worktreeBytes)) of disk."
+        return "Leftovers are holding \(Format.bytes(model.leakBytes)) of memory and \(Format.bytes(model.inputs.reclaimableDisk)) of disk."
     }
 
     private func bar(label: String, value: Int, tint: Color) -> some View {

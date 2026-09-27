@@ -41,6 +41,12 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
 - **Overview**: your Mac's strength now and after a safe cleanup (memory, swap and disk,
   with the formula shown), memory and disk bars, and what's holding it back.
 - **Dashboard**: a sidebar window with these views.
+  - **Disk**: your disk split into **System** (macOS, swap, updates, recovery), **Apps**
+    (the apps you installed plus their support data and caches, per app, sortable) and
+    **Yours**. Empties developer caches that rebuild themselves (Xcode build files,
+    simulator caches, npm, pnpm, Yarn, Bun, pip, uv, Poetry, Homebrew, SwiftPM, CocoaPods,
+    Gradle, Go, Cargo, Playwright), each only while nothing using it runs, and clears an
+    app's caches while it's quit. Your code and documents are never touched.
   - **Likely Leaks**: each one with a plain-language reason and a Quit button.
   - **Apps**: every app with all of its helper processes summed, with the app's own icon.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
@@ -74,6 +80,9 @@ App logos come from the apps installed on your Mac. Nothing is downloaded.
 
 <p align="center">
   <img src="docs/screenshots/overview-light.png" width="820" alt="Overview: your Mac's strength now and after cleanup">
+</p>
+<p align="center">
+  <img src="docs/screenshots/disk-light.png" width="820" alt="Disk: system, apps and your files, and caches you can empty">
 </p>
 
 <p align="center">

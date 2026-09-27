@@ -13,6 +13,8 @@ struct HoldingBackList: View {
                 value: Format.bytes(model.leakBytes) + " memory", section: .leaks)
             row("arrow.triangle.branch", "Worktrees already on main", detail: count(model.safeWorktreeCount, "worktree", "worktrees"),
                 value: model.worktreesMeasured ? Format.bytes(model.worktreeBytes) + " disk" : "measuring…", section: .worktrees)
+            row("shippingbox", "Developer caches", detail: "rebuild themselves when needed",
+                value: model.cachesMeasured ? Format.bytes(model.cacheBytes) + " disk" : "measuring…", section: .disk)
             row("square.on.square", "Duplicate MCP servers", detail: count(model.duplicateServerCount, "copy", "copies"),
                 value: Format.bytes(model.duplicateServerBytes) + " memory", section: .agents)
             row("clock.badge.exclamationmark", "Failing scheduled jobs", detail: count(model.failingJobs, "job", "jobs"),

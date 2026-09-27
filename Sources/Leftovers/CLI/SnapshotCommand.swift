@@ -26,9 +26,12 @@ enum SnapshotCommand {
         RunLoop.main.run(until: Date().addingTimeInterval(warmUp))
         // Worktrees need a finished scan (~30 s on a busy machine), not a half-done one.
         let worktrees = WorktreeStore.shared
+        let disk = DiskStore.shared
         Task { await worktrees.scan(inUse: store.workingFolders) }
+        Task { await disk.scan() }
         let deadline = Date().addingTimeInterval(180)
-        repeat { RunLoop.main.run(until: Date().addingTimeInterval(0.5)) } while worktrees.progress.isScanning && Date() < deadline
+        repeat { RunLoop.main.run(until: Date().addingTimeInterval(0.5)) }
+            while (worktrees.progress.isScanning || disk.progress.isScanning || disk.lastScan == nil) && Date() < deadline
         if redact { worktrees.showForSnapshot(WorktreeRedactor.redact(worktrees.worktrees)) }
         for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
             renderAll(store: store, appearance: appearance, suffix: name, into: directory)

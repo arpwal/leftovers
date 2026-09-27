@@ -6,14 +6,20 @@ struct SectionPane: View {
     let section: DashboardSection
     @ObservedObject private var scheduled = ScheduledStore.shared
     @ObservedObject private var worktrees = WorktreeStore.shared
+    @ObservedObject private var disk = DiskStore.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             SectionHeader(section: section)
-            if let system = store.system, section != .overview {
+            if let system = store.system, section != .overview, section != .disk {
                 StatCards(system: system, reclaimableBytes: store.report.map { _ in store.reclaimableBytes })
             }
-            if section == .worktrees {
+            if section == .disk {
+                DiskView(store: disk, monitor: store, worktrees: worktrees)
+                if let message = disk.lastActionMessage {
+                    Text(message).font(.caption).foregroundStyle(.secondary)
+                }
+            } else if section == .worktrees {
                 WorktreesView(store: worktrees, monitor: store)
                 if let message = worktrees.lastActionMessage {
                     Text(message).font(.caption).foregroundStyle(.secondary)
@@ -39,8 +45,9 @@ struct SectionPane: View {
     @ViewBuilder private func content(_ report: MemoryReport) -> some View {
         switch section {
         case .overview:
-            OverviewView(store: store, worktrees: worktrees, jobs: scheduled)
+            OverviewView(store: store, worktrees: worktrees, jobs: scheduled, caches: disk)
                 .task { await worktrees.scanIfStale(monitor: store); await scheduled.reload() }
+                .task { await disk.scanIfStale() }
         case .leaks:
             if store.suspects.isEmpty {
                 ContentUnavailableView("No Leaks Found", systemImage: "checkmark.seal",
@@ -59,7 +66,7 @@ struct SectionPane: View {
                     SkeletonRows(count: 5)
                 }
             }
-        case .scheduled, .worktrees: EmptyView()   // rendered above; need no memory reading
+        case .scheduled, .worktrees, .disk: EmptyView()   // rendered above; need no memory reading
         case .processes: ProcessTable(processes: store.userProcesses, store: store)
         case .protected: ProcessTable(processes: store.protectedProcesses, store: store)
         }
