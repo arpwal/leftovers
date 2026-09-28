@@ -4,13 +4,13 @@
     <title>Leftovers</title>
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
-      <title>Leftovers 1.7.0</title>
-      <pubDate>Sun, 27 Sep 2026 06:15:42 +0000</pubDate>
-      <sparkle:version>13</sparkle:version>
-      <sparkle:shortVersionString>1.7.0</sparkle:shortVersionString>
+      <title>Leftovers 1.8.0</title>
+      <pubDate>Mon, 28 Sep 2026 00:19:01 +0000</pubDate>
+      <sparkle:version>14</sparkle:version>
+      <sparkle:shortVersionString>1.8.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<ul><li>Disk space now split into clear groups: system, apps, and yours</li><li>Clear developer caches that safely rebuild themselves</li><li>Clear per-app caches without closing files, just quit the app</li><li>See how much space you could get back</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.7.0/Leftovers.zip" sparkle:edSignature="dZqnxbq3Q5c0V7E4D7mD5mVMnpaPll4TCCOX7jy3A+tk2j3uSR4cOjMIclL1Mmq3igyD1RpNgXuttg1SMf4CBA==" length="3621187" type="application/octet-stream"/>
+      <description><![CDATA[<ul><li>New Disk section shows what's using space and can rescan.</li><li>Get a warning when your disk is almost full.</li><li>Clean up AI models, Docker, and unused dev files easily.</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.8.0/Leftovers.zip" sparkle:edSignature="4yfvcCRi1/T9CzPEcgF8G3QRnfHjSc5jytMKO5j9pXpE6eH4ahcjHqVJ9HuMu8AK7k/bJ1wOAKgiR2LOTGfvDA==" length="3987445" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>

@@ -2,6 +2,12 @@
 
 Written by Claude from each release's changes, in plain words.
 
+## 1.8.0 · September 27, 2026
+
+- Disk section now updates itself in the background as it scans.
+- See disk hogs for AI models, Docker, and old node_modules.
+- Get a gentle nudge when your disk space runs low.
+
 ## 1.7.0 · September 26, 2026
 
 - See exactly what's eating your disk: system, apps, and your files.
