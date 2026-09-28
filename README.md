@@ -96,6 +96,9 @@ App logos come from the apps installed on your Mac. Nothing is downloaded.
 <p align="center">
   <img src="docs/screenshots/disk-light.png" width="820" alt="Disk: system, apps and your files, and caches you can empty">
 </p>
+<p align="center">
+  <img src="docs/screenshots/simulators-light.png" width="820" alt="Advanced: simulators that can never start again, with their sizes">
+</p>
 
 <p align="center">
   <img src="docs/screenshots/worktrees-light.png" width="49%" alt="Worktrees view">
