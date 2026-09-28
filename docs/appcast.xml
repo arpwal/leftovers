@@ -5,12 +5,12 @@
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
       <title>Leftovers 1.8.0</title>
-      <pubDate>Mon, 28 Sep 2026 00:19:01 +0000</pubDate>
+      <pubDate>Mon, 28 Sep 2026 00:22:31 +0000</pubDate>
       <sparkle:version>14</sparkle:version>
       <sparkle:shortVersionString>1.8.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[<ul><li>New Disk section shows what's using space and can rescan.</li><li>Get a warning when your disk is almost full.</li><li>Clean up AI models, Docker, and unused dev files easily.</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.8.0/Leftovers.zip" sparkle:edSignature="4yfvcCRi1/T9CzPEcgF8G3QRnfHjSc5jytMKO5j9pXpE6eH4ahcjHqVJ9HuMu8AK7k/bJ1wOAKgiR2LOTGfvDA==" length="3987445" type="application/octet-stream"/>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.8.0/Leftovers.zip" sparkle:edSignature="xzqRlUoG4/AnuMaubu4c7c29lBY9hOj6ePw87N6LPjQIMG7RYNmgEpNZOBRIsjhNFs+n8+uiojjK/L6X0MGhAw==" length="3989301" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
