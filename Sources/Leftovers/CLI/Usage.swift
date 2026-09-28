@@ -12,6 +12,7 @@ enum Usage {
       --clean                      quit every likely leak; protected processes are refused
       --jobs [--json]              scheduled background jobs
       --worktrees [--json]         git worktrees and which are safe to remove
+      --disk [--json]              disk split into system, apps and yours, plus developer caches
       --check-updates [--install]  updater state and a check against the live feed
       --snapshot <dir> [--redact]  render the UI to PNGs
       --help                       this text

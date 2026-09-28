@@ -12,11 +12,12 @@ enum CommandRouter {
         case memoryReport, memoryJSON, clean
         case jobs(json: Bool)
         case worktrees(json: Bool)
+        case disk(json: Bool)
         case checkUpdates(install: Bool)
         case snapshot(directory: String, redact: Bool)
     }
 
-    static let flags: Set<String> = ["--report", "--json", "--clean", "--jobs", "--worktrees", "--check-updates",
+    static let flags: Set<String> = ["--report", "--json", "--clean", "--jobs", "--worktrees", "--disk", "--check-updates",
                                      "--install", "--snapshot", "--redact", "--help", "-h"]
 
     static func command(for arguments: [String]) -> Command {
@@ -34,6 +35,7 @@ enum CommandRouter {
         }
         if has("--jobs") { return .jobs(json: has("--json")) }
         if has("--worktrees") { return .worktrees(json: has("--json")) }
+        if has("--disk") { return .disk(json: has("--json")) }
         if has("--check-updates") { return .checkUpdates(install: has("--install")) }
         if has("--clean") { return .clean }
         if has("--report") { return .memoryReport }

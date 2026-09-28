@@ -1,10 +1,12 @@
 import AppKit
 
-/// The Disk section's data, filled in progressively: volume usage first
-/// (instant), then the app list, then sizes as each one is measured.
+/// The Disk section's data. Opens instantly from the last scan; a refresh
+/// re-reads the volumes (a tenth of a second) and re-measures folders in the
+/// background, largest first, each row keeping its last size until its new
+/// one lands. Refreshes at most every 30 minutes unless asked.
 @MainActor
 final class DiskStore: ObservableObject {
-    struct CacheItem: Identifiable, Hashable {
+    struct CacheItem: Identifiable, Hashable, Codable {
         let target: CleanupTarget
         var bytes: UInt64?
         var id: CleanupTarget { target }
@@ -17,55 +19,75 @@ final class DiskStore: ObservableObject {
     }
 
     static let shared = DiskStore()
+    nonisolated static let maxAge: TimeInterval = 30 * 60
     @Published private(set) var breakdown: DiskBreakdown?
     @Published private(set) var apps: [InstalledApp] = []
     @Published private(set) var caches: [CacheItem] = []
     @Published private(set) var progress = Progress()
     @Published private(set) var lastScan: Date?
     @Published var lastActionMessage: String?
+    private let cache: DiskCache
     private static let width = 4
+
+    init(cache: DiskCache = DiskCache()) {
+        self.cache = cache
+        guard let saved = cache.load() else { return }
+        breakdown = saved.breakdown; apps = saved.apps; caches = saved.caches; lastScan = saved.scannedAt
+    }
 
     /// Developer caches worth offering (at least 1 MB), largest first.
     var cleanableCaches: [CacheItem] {
         caches.filter { ($0.bytes ?? 0) >= 1 << 20 }.sorted { ($0.bytes ?? 0) > ($1.bytes ?? 0) }
     }
     var cleanableBytes: UInt64 { cleanableCaches.compactMap(\.bytes).reduce(0, +) }
+    /// True only before anything was ever measured: afterwards old sizes stand in.
+    var isFirstScan: Bool { progress.isScanning && lastScan == nil }
 
-    func scanIfStale(maxAge: TimeInterval = 300) async {
-        if let lastScan, Date().timeIntervalSince(lastScan) < maxAge { return }
+    func scanIfStale(maxAge: TimeInterval = DiskStore.maxAge) async {
+        if let lastScan, Date().timeIntervalSince(lastScan) < maxAge {
+            await refreshVolumes()
+            return
+        }
         await scan()
+    }
+
+    func refreshVolumes() async {
+        guard let volumes = await Task.detached(priority: .userInitiated, operation: VolumeReader.read).value else { return }
+        if breakdown == nil { breakdown = DiskBreakdown(volumes: volumes) } else { breakdown?.volumes = volumes }
     }
 
     func scan() async {
         guard !progress.isScanning else { return }
         progress = Progress(isScanning: true)
-        let (volumes, found, targets) = await Task.detached(priority: .userInitiated) {
-            let apps = AppDataLocator.attach(AppFinder.installedApps(), listing: AppDataLocator.listing())
-            let targets = CleanupTarget.allCases.filter { FileManager.default.fileExists(atPath: $0.path()) }
-            return (VolumeReader.read(), apps, targets)
+        await refreshVolumes()
+        let (found, targets) = await Task.detached(priority: .userInitiated) {
+            (AppDataLocator.attach(AppFinder.installedApps(), listing: AppDataLocator.listing()),
+             CleanupTarget.allCases.filter { FileManager.default.fileExists(atPath: $0.path()) })
         }.value
-        if let volumes { breakdown = DiskBreakdown(volumes: volumes) }
-        apps = markRunning(found)
-        caches = targets.map { CacheItem(target: $0) }
-        let jobs = targets.map(DiskMeasurement.target) + found.map {
-            DiskMeasurement.app(path: $0.path, bundle: $0.path, data: $0.dataPaths, caches: $0.cachePaths)
-        }
+        let oldApps = Dictionary(apps.map { ($0.path, $0) }, uniquingKeysWith: { a, _ in a })
+        let oldCaches = Dictionary(caches.map { ($0.target, $0.bytes) }, uniquingKeysWith: { a, _ in a })
+        apps = markRunning(found.map { DiskMerge.carryOver(oldApps[$0.path], into: $0) })
+        caches = targets.map { CacheItem(target: $0, bytes: oldCaches[$0] ?? nil) }
+        recomputeTotals()
+        let jobs = DiskMerge.largestFirst(caches: caches, apps: apps)
         progress.total = jobs.count
         await DiskMeasurement.runAll(jobs, width: Self.width) { self.apply($0) }
         progress.isScanning = false
         lastScan = Date()
+        save()
     }
 
     func apply(_ result: DiskMeasurement.Result) {
         switch result {
         case let .target(target, bytes):
-            if let i = caches.firstIndex(where: { $0.target == target }) { caches[i].bytes = bytes }
+            if let i = caches.firstIndex(where: { $0.target == target }), let bytes { caches[i].bytes = bytes }
         case let .app(path, app, data, cacheBytes):
             if let i = apps.firstIndex(where: { $0.path == path }) {
-                apps[i].appBytes = app; apps[i].dataBytes = data; apps[i].cacheBytes = cacheBytes
+                apps[i].appBytes = app ?? apps[i].appBytes
+                apps[i].dataBytes = data ?? apps[i].dataBytes
+                apps[i].cacheBytes = cacheBytes ?? apps[i].cacheBytes
             }
-            breakdown?.appBytes = apps.compactMap(\.appBytes).reduce(0, +)
-            breakdown?.appDataBytes = apps.reduce(0) { $0 + ($1.dataBytes ?? 0) + ($1.cacheBytes ?? 0) }
+            recomputeTotals()
         }
         progress.measured += 1
     }
@@ -73,13 +95,23 @@ final class DiskStore: ObservableObject {
     func refreshRunning() { apps = markRunning(apps) }
 
     func setMeasured(_ target: CleanupTarget, bytes: UInt64) {
-        apply(.target(target, bytes)); progress.measured -= 1
+        if let i = caches.firstIndex(where: { $0.target == target }) { caches[i].bytes = bytes }
+        save()
     }
 
     func setCaches(of path: String, bytes: UInt64) {
         guard let i = apps.firstIndex(where: { $0.path == path }) else { return }
         apps[i].cacheBytes = bytes
+        recomputeTotals(); save()
+    }
+
+    private func recomputeTotals() {
+        breakdown?.appBytes = apps.compactMap(\.appBytes).reduce(0, +)
         breakdown?.appDataBytes = apps.reduce(0) { $0 + ($1.dataBytes ?? 0) + ($1.cacheBytes ?? 0) }
+    }
+
+    private func save() {
+        cache.save(.init(scannedAt: lastScan ?? Date(), breakdown: breakdown, apps: apps, caches: caches))
     }
 
     private func markRunning(_ list: [InstalledApp]) -> [InstalledApp] {

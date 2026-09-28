@@ -3,13 +3,19 @@ import Foundation
 /// The dashboard's sidebar destinations.
 enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
     case overview, disk, leaks, apps, agents, worktrees, scheduled, processes, protected
+    case aiModels, docker, nodeModules, simulators, snapshots
 
     var id: String { rawValue }
     /// File-name form for `--snapshot`.
     var slug: String { rawValue }
 
     /// Sections built from the live memory reading (refreshed every few seconds).
-    var usesMemoryReading: Bool { self != .worktrees && self != .scheduled && self != .disk }
+    var usesMemoryReading: Bool { self != .worktrees && self != .scheduled && self != .disk && advancedTool == nil }
+
+    /// Set for the sections in the sidebar's Advanced group.
+    var advancedTool: AdvancedTool? { AdvancedTool(rawValue: rawValue) }
+    static var main: [DashboardSection] { allCases.filter { $0.advancedTool == nil } }
+    static var advanced: [DashboardSection] { allCases.filter { $0.advancedTool != nil } }
 
     var title: String {
         switch self {
@@ -22,6 +28,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
         case .scheduled: return "Scheduled"
         case .processes: return "All Processes"
         case .protected: return "Protected"
+        case .aiModels, .docker, .nodeModules, .simulators, .snapshots: return advancedTool?.title ?? ""
         }
     }
 
@@ -36,6 +43,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
         case .scheduled: return "clock.arrow.circlepath"
         case .processes: return "list.bullet"
         case .protected: return "lock.shield"
+        case .aiModels, .docker, .nodeModules, .simulators, .snapshots: return advancedTool?.symbol ?? ""
         }
     }
 
@@ -50,6 +58,7 @@ enum DashboardSection: String, CaseIterable, Identifiable, Hashable {
         case .scheduled: return "Background jobs in your account, including the ones Claude set up."
         case .processes: return "Your processes that you can quit."
         case .protected: return "macOS and system processes. Leftovers never quits these."
+        case .aiModels, .docker, .nodeModules, .simulators, .snapshots: return advancedTool?.subtitle ?? ""
         }
     }
 }

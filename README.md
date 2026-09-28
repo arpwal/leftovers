@@ -46,7 +46,19 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
     **Yours**. Empties developer caches that rebuild themselves (Xcode build files,
     simulator caches, npm, pnpm, Yarn, Bun, pip, uv, Poetry, Homebrew, SwiftPM, CocoaPods,
     Gradle, Go, Cargo, Playwright), each only while nothing using it runs, and clears an
-    app's caches while it's quit. Your code and documents are never touched.
+    app's caches while it's quit. Your code and documents are never touched. Opens
+    instantly from the last scan and re-measures in the background.
+  - **Advanced** (scanned only when you open them):
+    - **AI Models**: Ollama, Hugging Face and LM Studio downloads. Removing an Ollama
+      model keeps the parts another model shares.
+    - **Docker**: unused images, stopped containers and build cache. Volumes are never
+      offered: they can hold databases.
+    - **node_modules**: every project's installed packages with when they were last
+      installed. Projects something is working in are kept.
+    - **Simulators**: simulators whose iOS version is gone, and runtimes no simulator uses.
+    - **Snapshots**: local Time Machine snapshots (macOS asks for your password) and
+      purgeable space.
+  - **Low-disk warning**: one notification a day when under 10% free (can be turned off).
   - **Likely Leaks**: each one with a plain-language reason and a Quit button.
   - **Apps**: every app with all of its helper processes summed, with the app's own icon.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
@@ -163,6 +175,7 @@ leftovers --clean    # quit every likely leak; protected processes are refused
 leftovers --check-updates   # updater state and a check against the live feed
 leftovers --jobs     # scheduled background jobs (add --json for agents)
 leftovers --worktrees   # git worktrees and which are safe to remove (add --json)
+leftovers --disk        # system, apps and yours, plus developer caches (add --json)
 leftovers --help     # every command
 ```
 

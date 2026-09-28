@@ -29,10 +29,16 @@ enum SnapshotCommand {
         let disk = DiskStore.shared
         Task { await worktrees.scan(inUse: store.workingFolders) }
         Task { await disk.scan() }
-        let deadline = Date().addingTimeInterval(180)
+        let advanced = AdvancedStore.shared
+        for tool in AdvancedTool.allCases { Task { await advanced.scan(tool, monitor: store) } }
+        let deadline = Date().addingTimeInterval(240)
         repeat { RunLoop.main.run(until: Date().addingTimeInterval(0.5)) }
-            while (worktrees.progress.isScanning || disk.progress.isScanning || disk.lastScan == nil) && Date() < deadline
-        if redact { worktrees.showForSnapshot(WorktreeRedactor.redact(worktrees.worktrees)) }
+            while (worktrees.progress.isScanning || disk.progress.isScanning || disk.lastScan == nil
+                   || AdvancedTool.allCases.contains(where: advanced.isBusy)) && Date() < deadline
+        if redact {
+            worktrees.showForSnapshot(WorktreeRedactor.redact(worktrees.worktrees))
+            advanced.hideForSnapshot(containing: ["amaltash"])
+        }
         for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
             renderAll(store: store, appearance: appearance, suffix: name, into: directory)
         }

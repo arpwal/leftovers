@@ -2,15 +2,17 @@ import Foundation
 
 /// Folder sizes via `du`, which counts each file once even across hard links.
 enum DiskSize {
-    /// Combined size of `paths` (0 for none). Unreadable parts are skipped.
-    static func total(of paths: [String]) -> UInt64 {
+    /// Combined size of `paths` (0 for none); nil if `du` didn't finish, so a
+    /// caller keeps the last known size instead of showing 0. Unreadable parts are skipped.
+    static func total(of paths: [String]) -> UInt64? {
         guard !paths.isEmpty else { return 0 }
         // -c adds a final "total" line; du exits non-zero if any part was unreadable,
         // so run it through a shell that always succeeds and read what it printed.
         let quoted = paths.map { "'" + $0.replacingOccurrences(of: "'", with: "'\\''") + "'" }.joined(separator: " ")
-        guard let out = Git.run(executable: "/bin/sh", ["-c", "/usr/bin/du -skc \(quoted) 2>/dev/null; true"], timeout: 120),
+        guard let out = Git.run(executable: "/bin/sh", ["-c", "/usr/bin/du -skc \(quoted) 2>/dev/null; true"], timeout: 600),
               let last = out.split(separator: "\n").last,
-              let kb = UInt64(last.split(separator: "\t").first ?? "") else { return 0 }
+              last.hasSuffix("\ttotal"),
+              let kb = UInt64(last.split(separator: "\t").first ?? "") else { return nil }
         return kb * 1024
     }
 }
@@ -21,8 +23,8 @@ enum DiskMeasurement: Sendable {
     case app(path: String, bundle: String, data: [String], caches: [String])
 
     enum Result: Sendable {
-        case target(CleanupTarget, UInt64)
-        case app(path: String, app: UInt64, data: UInt64, caches: UInt64)
+        case target(CleanupTarget, UInt64?)
+        case app(path: String, app: UInt64?, data: UInt64?, caches: UInt64?)
     }
 
     func run() -> Result {

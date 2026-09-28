@@ -36,6 +36,7 @@ enum SettingsKey {
     static let hasCompletedOnboarding = "hasCompletedOnboarding"
     static let showInDock = "showInDock"
     static let notifyAboutUpdates = "notifyAboutUpdates"
+    static let warnWhenDiskLow = "warnWhenDiskLow"
 }
 
 /// Typed reads for code that cannot use `@AppStorage` (delegate, store loop).
@@ -51,6 +52,10 @@ enum AppSettings {
 
     static var notifyAboutUpdates: Bool {
         UserDefaults.standard.object(forKey: SettingsKey.notifyAboutUpdates) as? Bool ?? true
+    }
+
+    static var warnWhenDiskLow: Bool {
+        UserDefaults.standard.object(forKey: SettingsKey.warnWhenDiskLow) as? Bool ?? true
     }
 
     static var activationPolicy: NSApplication.ActivationPolicy { showInDock ? .regular : .accessory }

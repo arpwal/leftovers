@@ -11,10 +11,15 @@ struct SidebarView: View {
     var body: some View {
         List(selection: $selection) {
             Section {
-                ForEach(DashboardSection.allCases) { section in
+                ForEach(DashboardSection.main) { section in
                     Label(section.title, systemImage: section.symbol)
                         .badge(count(for: section))
                         .tag(section)
+                }
+            }
+            Section("Advanced") {
+                ForEach(DashboardSection.advanced) { section in
+                    Label(section.title, systemImage: section.symbol).tag(section)
                 }
             }
         }
@@ -34,7 +39,7 @@ struct SidebarView: View {
         case .worktrees: return worktrees.safe.count
         case .scheduled: return scheduled.jobs.count
         case .processes: return store.userProcesses.count
-        case .protected: return 0
+        case .protected, .aiModels, .docker, .nodeModules, .simulators, .snapshots: return 0
         }
     }
 

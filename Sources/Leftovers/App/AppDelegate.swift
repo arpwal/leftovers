@@ -19,7 +19,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         StartupTrace.mark("menu bar item ready")
         showFirstWindow()
         // The updater isn't needed to draw anything: start it after launch.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { UpdateController.shared.start() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            UpdateController.shared.start()
+            LowDiskWatcher.shared.start()
+        }
     }
 
     /// Welcome on first run; otherwise the dashboard, when Leftovers is a Dock

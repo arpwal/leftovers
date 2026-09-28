@@ -30,7 +30,10 @@ final class UpdateNotifier: NSObject, UNUserNotificationCenterDelegate {
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                             withCompletionHandler completionHandler: @escaping () -> Void) {
-        Task { @MainActor in UpdateController.shared.checkForUpdates() }
+        let isLowDisk = response.notification.request.identifier == LowDiskWatcher.identifier
+        Task { @MainActor in
+            if isLowDisk { WindowCoordinator.shared.showDashboard(section: .disk) } else { UpdateController.shared.checkForUpdates() }
+        }
         completionHandler()
     }
 

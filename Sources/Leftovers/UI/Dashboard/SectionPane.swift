@@ -7,14 +7,20 @@ struct SectionPane: View {
     @ObservedObject private var scheduled = ScheduledStore.shared
     @ObservedObject private var worktrees = WorktreeStore.shared
     @ObservedObject private var disk = DiskStore.shared
+    @ObservedObject private var advanced = AdvancedStore.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             SectionHeader(section: section)
-            if let system = store.system, section != .overview, section != .disk {
+            if let system = store.system, section != .overview, section != .disk, section.advancedTool == nil {
                 StatCards(system: system, reclaimableBytes: store.report.map { _ in store.reclaimableBytes })
             }
-            if section == .disk {
+            if let tool = section.advancedTool {
+                AdvancedView(tool: tool, store: advanced, monitor: store)
+                if let message = advanced.lastActionMessage {
+                    Text(message).font(.caption).foregroundStyle(.secondary)
+                }
+            } else if section == .disk {
                 DiskView(store: disk, monitor: store, worktrees: worktrees)
                 if let message = disk.lastActionMessage {
                     Text(message).font(.caption).foregroundStyle(.secondary)
@@ -66,7 +72,7 @@ struct SectionPane: View {
                     SkeletonRows(count: 5)
                 }
             }
-        case .scheduled, .worktrees, .disk: EmptyView()   // rendered above; need no memory reading
+        case .scheduled, .worktrees, .disk, .aiModels, .docker, .nodeModules, .simulators, .snapshots: EmptyView()   // rendered above; need no memory reading
         case .processes: ProcessTable(processes: store.userProcesses, store: store)
         case .protected: ProcessTable(processes: store.protectedProcesses, store: store)
         }

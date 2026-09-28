@@ -29,7 +29,7 @@ enum DiskArea: String, CaseIterable, Identifiable {
 }
 
 /// Raw numbers from the APFS container holding the boot volume, in bytes.
-struct VolumeUsage: Equatable {
+struct VolumeUsage: Equatable, Codable {
     var containerTotal: UInt64
     var containerFree: UInt64
     /// The sealed macOS volume.
@@ -43,8 +43,8 @@ struct VolumeUsage: Equatable {
 /// The disk split into system, app and personal use. Apps and app data are
 /// measured; "your files and everything else" is what's left of the Data
 /// volume, so the slices always add up to the container.
-struct DiskBreakdown: Equatable {
-    let volumes: VolumeUsage
+struct DiskBreakdown: Equatable, Codable {
+    var volumes: VolumeUsage
     var appBytes: UInt64 = 0
     var appDataBytes: UInt64 = 0
 

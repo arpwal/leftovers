@@ -13,7 +13,7 @@ struct DiskView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             activityStrip
-            if let breakdown = store.breakdown { DiskBreakdownCard(breakdown: breakdown, isMeasuring: store.progress.isScanning) }
+            if let breakdown = store.breakdown { DiskBreakdownCard(breakdown: breakdown, isMeasuring: store.isFirstScan) }
             Picker("", selection: $tab) { ForEach(Tab.allCases, id: \.self) { Text($0.rawValue) } }
                 .pickerStyle(.segmented).labelsHidden().fixedSize()
             switch tab {
@@ -28,7 +28,7 @@ struct DiskView: View {
         let p = store.progress
         return HStack(spacing: 8) {
             if p.isScanning {
-                ActivityPill(text: p.total == 0 ? "Reading volumes and apps" : "Measured \(p.measured) of \(p.total)",
+                ActivityPill(text: p.total == 0 ? "Reading volumes and apps" : "\(store.lastScan == nil ? "Measured" : "Refreshed") \(p.measured) of \(p.total)",
                              isDone: p.total > 0 && p.measured == p.total)
             }
             UpdatedAgo(date: store.lastScan, isWorking: p.isScanning)

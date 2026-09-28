@@ -8,6 +8,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.showReclaimableInMenuBar) private var showReclaimable = true
     @AppStorage(SettingsKey.showInDock) private var showInDock = true
     @AppStorage(SettingsKey.notifyAboutUpdates) private var notifyAboutUpdates = true
+    @AppStorage(SettingsKey.warnWhenDiskLow) private var warnWhenDiskLow = true
     @State private var openAtLogin = LoginItem.isEnabled
     @State private var loginError: String?
     @State private var checksForUpdates = UpdateController.shared.automaticallyChecks
@@ -33,6 +34,7 @@ struct SettingsView: View {
                 Picker("Refresh", selection: $refreshInterval) {
                     ForEach(RefreshInterval.allCases) { Text($0.label).tag($0) }
                 }
+                Toggle("Warn me when the disk is almost full", isOn: $warnWhenDiskLow)
             }
             Section("Protected") { protectedList }
             Section("About") {

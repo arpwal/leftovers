@@ -23,7 +23,7 @@ enum DiskActions {
         var freed: UInt64 = 0
         for item in ready {
             let path = item.target.path()
-            let after = await Task.detached { _ = CachePurger.empty(path); return DiskSize.total(of: [path]) }.value
+            let after = await Task.detached { _ = CachePurger.empty(path); return DiskSize.total(of: [path]) ?? 0 }.value
             freed += (item.bytes ?? 0) > after ? (item.bytes ?? 0) - after : 0
             store.setMeasured(item.target, bytes: after)
         }
@@ -41,7 +41,7 @@ enum DiskActions {
                            detail: "Only its cache folders. Settings, sign-ins and documents stay. It rebuilds them as it needs them.",
                            actionTitle: "Clear \(Format.bytes(current.cacheBytes ?? 0))") else { return }
         let paths = current.cachePaths
-        let after = await Task.detached { paths.forEach { _ = CachePurger.empty($0) }; return DiskSize.total(of: paths) }.value
+        let after = await Task.detached { paths.forEach { _ = CachePurger.empty($0) }; return DiskSize.total(of: paths) ?? 0 }.value
         let before = current.cacheBytes ?? 0
         store.setCaches(of: app.path, bytes: after)
         store.lastActionMessage = "Cleared \(app.name)'s caches, freeing \(Format.bytes(before > after ? before - after : 0))."

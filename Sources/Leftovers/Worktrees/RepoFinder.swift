@@ -3,7 +3,7 @@ import Foundation
 /// Finds git repositories that may have worktrees: common code folders
 /// (a few levels deep) plus wherever processes are working right now.
 enum RepoFinder {
-    private static let roots = ["Documents", "Developer", "Projects", "code", "Code", "src", "repos", "GitHub", "Sites", "work"]
+    static let roots = ["Documents", "Developer", "Projects", "code", "Code", "src", "repos", "GitHub", "Sites", "work"]
         .map { (NSHomeDirectory() as NSString).appendingPathComponent($0) }
     private static let skip: Set<String> = ["node_modules", ".build", "build", "dist", "Library", "Pods",
                                             "DerivedData", "vendor", ".venv", "venv", ".cache", "target"]

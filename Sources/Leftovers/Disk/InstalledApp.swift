@@ -2,7 +2,7 @@ import Foundation
 
 /// One app in /Applications with the data it keeps in ~/Library. Sizes are
 /// nil until measured.
-struct InstalledApp: Identifiable, Hashable {
+struct InstalledApp: Identifiable, Hashable, Codable {
     let path: String
     let name: String
     let bundleID: String?
