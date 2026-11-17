@@ -1,0 +1,10 @@
+{
+  "name": "leftovers",
+  "version": "0.1.0",
+  "description": "Reminds Claude to clean up the git worktrees it created once the work is done, and adds a background cleanup agent that asks permission first and only removes what you choose.",
+  "author": { "name": "Arpit Agarwal", "url": "https://github.com/arpwal" },
+  "homepage": "https://arpwal.github.io/leftovers/",
+  "repository": "https://github.com/arpwal/leftovers",
+  "license": "MIT",
+  "keywords": ["git", "worktree", "cleanup", "leftovers"]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "leftovers",
+  "owner": { "name": "Arpit Agarwal", "url": "https://github.com/arpwal" },
+  "plugins": [
+    {
+      "name": "leftovers",
+      "source": "./plugins/leftovers",
+      "description": "Reminds Claude to clean up the git worktrees it created, with a background cleanup agent that asks before removing anything."
+    }
+  ]
+}
