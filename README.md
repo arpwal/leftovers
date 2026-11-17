@@ -185,6 +185,21 @@ leftovers --help     # every command
 An agent can run `leftovers --json`, read `likelyLeaks` and `duplicateToolServers`,
 and decide what to do. It's the same data the app shows.
 
+## Claude Code plugin
+
+A plugin that makes Claude clean up the git worktrees it created once the work is done,
+asking you first. When a session finishes with new worktrees still on disk, Claude asks
+whether to check them; a background agent sorts them into safe, probably done and keep,
+and Claude removes only the ones you pick (never forced, branches kept).
+
+```
+/plugin marketplace add arpwal/leftovers
+/plugin install leftovers@leftovers
+```
+
+Run `/leftovers:cleanup-worktrees` any time. Details in
+[plugins/leftovers](plugins/leftovers/README.md).
+
 ## Privacy
 
 Leftovers collects nothing and has no telemetry. Its only network request is a daily update

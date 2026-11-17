@@ -1,0 +1,19 @@
+{
+  "description": "Remember the worktrees a session starts with, and remind Claude to offer a cleanup of the ones it created before it finishes.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/stop-reminder.sh\"", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}
