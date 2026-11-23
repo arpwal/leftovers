@@ -4,10 +4,10 @@ Written by Claude from each release's changes, in plain words.
 
 ## 1.9.0 · November 23, 2026
 
-- Fixes a bug that can leak memory when files change a lot
-- Can spot and restart the stuck helper for you
-- Won't lose permission to restart it after updates
-- Shows better status when it can't read memory use
+- Watches macOS's file-event service (fseventsd), which can leak to many GB and pin a CPU core after weeks of heavy file churn
+- Alerts you in the menu bar and with a notification, with a one-click Restart
+- Restarts it automatically after a one-time approval in Login Items, at most once every 30 minutes
+- Backs off, then pauses with a one-click "raise the limit" if it keeps coming back
 
 ## 1.8.0 · September 27, 2026
 

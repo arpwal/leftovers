@@ -149,6 +149,7 @@ footer a{color:var(--muted)}
       <div class="card"><h3>Your Mac's strength</h3><p>Memory, swap and disk in one score, now and after a safe cleanup, with the formula shown.</p></div>
       <div class="card"><h3>Disk, split three ways</h3><p>How much is macOS, how much your apps and their data, how much is yours. Then clear the developer caches that rebuild themselves.</p></div>
       <div class="card"><h3>Advanced cleanup</h3><p>AI models, Docker, old node_modules, dead simulators and Time Machine snapshots, each scanned only when you open it.</p></div>
+      <div class="card"><h3>fseventsd watchdog</h3><p>Restarts macOS's file-event service when it leaks or pins the CPU, after you allow it once. Alerts you either way.</p></div>
       <div class="card"><h3>Worktree cleanup</h3><p>Finds git worktrees whose work is already on main, squash merges included, and removes them one by one or all at once.</p></div>
       <div class="card"><h3>Scheduled jobs</h3><p>Every background job with its schedule, next run and status, and which agent set it up.</p></div>
       <div class="card"><h3>One-step cleanup</h3><p>Quit every likely leak at once, after a standard confirmation that lists what will stop.</p></div>
@@ -191,6 +192,23 @@ footer a{color:var(--muted)}
       <div class="card"><div class="big">0 <small>uncommitted changes ever lost</small></div><p class="muted">The check is read-only, and git refuses to remove a worktree with unsaved work. Branches are kept.</p></div>
     </div>
     <img class="shot" src="screenshots/worktrees-light.png" alt="Worktrees view: status chips (safe to remove, has changes, not on main yet) and a sortable table">
+  </section>
+
+  <section id="fseventsd">
+    <div class="section-head">
+      <h2>The macOS service that slows everything down.</h2>
+      <p class="muted"><code>fseventsd</code> records every file change on your disk, for Spotlight, Time Machine and any app watching files. After weeks of worktrees, <code>node_modules</code> and builds it can leak, and Activity Monitor won't tell you it's the reason your Mac crawls. Excluding folders from Spotlight doesn't help. Leftovers watches it and restarts it before you notice.</p>
+    </div>
+    <div class="problems" style="margin-bottom:24px">
+      <div class="card"><div class="big">20 GB <small>after 31 days</small></div><p class="muted">Held by fseventsd at 118% CPU, with 58 GB of swap full. A restart brought it back to 5 MB in 30 seconds.</p></div>
+      <div class="card"><div class="big">50 MB <small>or 10% CPU</small></div><p class="muted">The default limits, both adjustable. CPU has to stay over for 2 minutes. Short spikes from builds don't count.</p></div>
+      <div class="card"><div class="big">1 <small>restart per 30 min</small></div><p class="muted">If it keeps coming back, Leftovers backs off and suggests a higher limit instead of looping.</p></div>
+    </div>
+    <ul class="muted" style="margin:0;padding-left:20px;display:grid;gap:4px">
+      <li>A ⚠︎ on the menu-bar dial and a notification with a Restart button</li>
+      <li>Automatic restarts through a small helper you allow once in Login Items; it can restart fseventsd and nothing else</li>
+      <li>Without the helper, Restart asks for your password. It never asks on its own</li>
+    </ul>
   </section>
 
   <section id="scheduled">

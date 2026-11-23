@@ -40,6 +40,10 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
   and your agents, each with its real logo.
 - **Overview**: your Mac's strength now and after a safe cleanup (memory, swap and disk,
   with the formula shown), memory and disk bars, and what's holding it back.
+- **fseventsd watchdog**: restarts macOS's file-event service when it runs away
+  (over **50 MB** or **10% CPU for 2 minutes**), with an alert in the menu bar, a
+  notification with a Restart button, and automatic restarts after you allow it once.
+  See [fseventsd watchdog](#fseventsd-watchdog).
 - **Dashboard**: a sidebar window with these views.
   - **Disk**: your disk split into **System** (macOS, swap, updates, recovery), **Apps**
     (the apps you installed plus their support data and caches, per app, sortable) and
@@ -59,21 +63,6 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
     - **Snapshots**: local Time Machine snapshots (macOS asks for your password) and
       purgeable space.
   - **Low-disk warning**: one notification a day when under 10% free (can be turned off).
-  - **fseventsd watchdog**: macOS's file-event service (`fseventsd`) can leak after
-    weeks of heavy file churn (git worktrees, `node_modules`): one reached 20 GB and
-    118% CPU after a month, filling 58 GB of swap. Leftovers watches it every refresh
-    and flags it in the menu (with a ⚠︎ in the menu bar), the Overview and Likely Leaks
-    when it uses more than **50 MB** or stays above **10% CPU for 2 minutes** (brief
-    build spikes don't count; both limits are adjustable in Settings). It posts a
-    notification with a **Restart fseventsd** button and, with automatic restarts on
-    (the default), restarts it itself, at most once every 30 minutes; a relapse within
-    that only alerts. If it keeps coming back soon after restarts, the wait doubles
-    (up to a day), and after three times automatic restarts pause with a one-click
-    "raise the limit" (its normal size on your Mac is simply above it). Readings are
-    ignored for 2 minutes after a restart, Leftovers checks a new fseventsd started,
-    and all of this state survives relaunching the app. Each restart is logged with
-    what it was using, and the last one is shown. fseventsd is never part of
-    **Clean Up**: it has its own card and button.
   - **Likely Leaks**: each one with a plain-language reason and a Quit button.
   - **Apps**: every app with all of its helper processes summed, with the app's own icon.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
@@ -138,6 +127,42 @@ it's for. Write `~/Library/Application Support/Leftovers/jobs/<label>.json`:
 
 Leftovers shows the purpose as the job's name, tags it with who created it, and shows
 when it ends.
+
+## fseventsd watchdog
+
+`fseventsd` is the macOS service that records every file change on your disk, for
+Spotlight, Time Machine and any app watching files. After weeks of heavy file churn
+(git worktrees, `node_modules`, builds) it can leak. The case that started this
+feature: **20 GB of memory and 118% CPU** after 31 days, with **58 GB of swap**
+full and the whole Mac crawling. Restarting it fixed everything in 30 seconds: launchd
+starts a fresh copy at about **5 MB**. Excluding folders from Spotlight doesn't help,
+because fseventsd records changes on the whole disk no matter what Spotlight indexes.
+
+Leftovers watches it on every refresh:
+
+| | Default | |
+|---|---|---|
+| Memory | over **50 MB** | footprint (RAM + compressed + swapped) |
+| CPU | over **10% for 2 minutes** | brief build spikes don't count |
+| Automatic restart | **on**, at most once every **30 min** | needs the helper, allowed once in Login Items |
+
+All limits are adjustable in Settings.
+
+- **Alerts**: a ⚠︎ on the menu-bar dial, a row in the menu and Overview, a card in
+  Likely Leaks, and a notification with a **Restart fseventsd** button.
+- **Restarts safely**: it asks fseventsd to quit so it saves its state, waits up to 60 s,
+  checks that launchd started a new one, and ignores readings for 2 minutes while it
+  settles. Every restart is logged with what it was using.
+- **Never loops**: if it comes back over the limit soon after a restart, the wait
+  doubles (up to a day). After three times, automatic restarts pause and Leftovers
+  offers a one-click "raise the limit": its normal size on your Mac is simply above it.
+- **Without the helper**: you still get alerts, and **Restart** asks for your password
+  (macOS's own prompt). It never shows a password prompt on its own.
+
+```sh
+leftovers --fseventsd            # live reading against the limits (add --json)
+leftovers --restart-fseventsd    # restart now (respects the cooldown; --force to skip it)
+```
 
 ## What counts as a leak
 
