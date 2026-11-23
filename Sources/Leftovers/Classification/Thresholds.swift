@@ -34,10 +34,10 @@ enum Thresholds {
     static let fseventsdMemory: UInt64 = 50 << 20
     /// At most one automatic restart per this long: each restart makes Time
     /// Machine and Spotlight rescan, so a re-cross within it only alerts.
+    /// Quick relapses double it (up to 24 h); see `WatchdogPolicy`. Each alert
+    /// kind also repeats at most once per (current) cooldown.
     static let fseventsdRestartCooldown: TimeInterval = 30 * 60
     /// The footprint read (`top`, ~0.5 s of CPU) runs at most this often;
     /// the cheap resident-size and CPU read runs every refresh.
     static let fseventsdFootprintInterval: TimeInterval = 2 * 60
-    /// Over-threshold notifications (no restart) repeat at most this often.
-    static let fseventsdAlertQuietPeriod: TimeInterval = 6 * 3_600
 }

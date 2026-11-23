@@ -1,15 +1,17 @@
 import SwiftUI
 
-/// fseventsd in Likely Leaks: shown while it's over its limits, restarting,
-/// or was restarted in the last day. Says what it's using and why it's
-/// flagged, with Restart and (without the helper) how to allow automatic restarts.
+/// fseventsd in Likely Leaks, as its own card (never a row Clean Up would
+/// iterate): shown while it's over its limits, restarting, unreadable, paused,
+/// or was restarted in the last day. Says what it's using and why, with
+/// Restart and (without the helper) how to allow automatic restarts.
 struct FseventsdCard: View {
     @ObservedObject var watchdog: FseventsdWatchdog
     private static let recentRestart: TimeInterval = 24 * 3_600
 
     static func isVisible(_ watchdog: FseventsdWatchdog) -> Bool {
         let recent = watchdog.lastRestart.map { Date().timeIntervalSince($0.date) < recentRestart } ?? false
-        return watchdog.needsRestart || watchdog.isRestarting || recent
+        let unreadable: Bool = { if case .unavailable = watchdog.status { return true }; return false }()
+        return watchdog.needsRestart || watchdog.isRestarting || recent || unreadable || watchdog.state.paused
     }
 
     var body: some View {
@@ -33,9 +35,8 @@ struct FseventsdCard: View {
     }
 
     private var detail: String {
-        guard let health = watchdog.health else { return "macOS's file-event service. Reading it…" }
-        let state = health.needsRestart ? "Using \(health.reason)." : "Healthy: \(health.usage)."
-        return "macOS's file-event service. \(state) Restarting it is safe: macOS starts a fresh one."
+        let paused = watchdog.state.paused ? " Automatic restarts are paused: it keeps coming back above your limit (see Settings)." : ""
+        return "macOS's file-event service. \(watchdog.status.label).\(paused) Restarting it is safe: macOS starts a fresh one."
     }
 
     @ViewBuilder private var actions: some View {
@@ -48,7 +49,7 @@ struct FseventsdCard: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
-            if !watchdog.helperStatus.isReady, watchdog.helperStatus != .unsigned {
+            if watchdog.helperStatus.canRegister {
                 Button("Allow automatic restarts…") { watchdog.enableHelper() }
                     .buttonStyle(.link).font(.caption)
             }

@@ -3,10 +3,16 @@ import Foundation
 
 /// A running fseventsd, pinned by pid AND start time: a pid alone can be
 /// reused by an unrelated process, the pair can't.
-public struct FseventsdIdentity: Hashable, Sendable {
+public struct FseventsdIdentity: Hashable, Codable, Sendable {
     public let pid: pid_t
     public let startSeconds: UInt64
     public let startMicroseconds: UInt64
+
+    public init(pid: pid_t, startSeconds: UInt64, startMicroseconds: UInt64) {
+        self.pid = pid
+        self.startSeconds = startSeconds
+        self.startMicroseconds = startMicroseconds
+    }
 
     public var startDate: Date {
         Date(timeIntervalSince1970: TimeInterval(startSeconds) + TimeInterval(startMicroseconds) / 1_000_000)
@@ -21,7 +27,7 @@ public enum FseventsdProcess {
         allPids().lazy.compactMap(identity(ifFseventsd:)).first
     }
 
-    /// True while `identity` still names the same live (non-zombie) fseventsd.
+    /// True while `identity` still names the same live fseventsd (same pid AND start time).
     public static func isAlive(_ identity: FseventsdIdentity) -> Bool {
         self.identity(ifFseventsd: identity.pid) == identity
     }
@@ -29,7 +35,10 @@ public enum FseventsdProcess {
     /// Reads the kernel's process record with sysctl: unlike PROC_PIDTBSDINFO
     /// it works unprivileged for root processes, and it carries the start time.
     private static func identity(ifFseventsd pid: pid_t) -> FseventsdIdentity? {
-        guard let record = kinfo(pid), record.kp_eproc.e_ucred.cr_uid == 0, record.kp_proc.p_stat != zombieStatus,
+        // The real fseventsd: root, started by launchd (ppid 1), not exited,
+        // and running the exact system binary.
+        guard let record = kinfo(pid), record.kp_eproc.e_ucred.cr_uid == 0, record.kp_eproc.e_ppid == 1,
+              record.kp_proc.p_stat != zombieStatus,
               executablePath(pid) == HelperConstants.fseventsdPath else { return nil }
         let start = record.kp_proc.p_starttime
         return FseventsdIdentity(pid: pid, startSeconds: UInt64(start.tv_sec), startMicroseconds: UInt64(start.tv_usec))

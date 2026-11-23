@@ -2,7 +2,8 @@ import AppKit
 
 /// The menu's fseventsd block, shown only while it's over its limits (or
 /// being restarted): what it's using, Restart, and how to allow automatic
-/// restarts when the helper isn't approved yet.
+/// restarts when the helper isn't approved yet. Its own block, apart from
+/// Likely Leaks, so "Clean Up All" never includes it.
 @MainActor
 struct FseventsdMenuItems {
     let watchdog: FseventsdWatchdog
@@ -16,7 +17,7 @@ struct FseventsdMenuItems {
         row.toolTip = "macOS's file-event service: \(health.reason)"
         items.append(row)
         items.append(restartItem())
-        if !watchdog.helperStatus.isReady, watchdog.helperStatus != .unsigned {
+        if watchdog.helperStatus.canRegister {
             items.append(ActionMenuItem(title: "Allow Automatic Restarts…") { watchdog.enableHelper() })
         }
         if let last = watchdog.lastRestart { items.append(disabled(last.summary)) }

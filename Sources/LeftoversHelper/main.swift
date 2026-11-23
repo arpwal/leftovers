@@ -3,7 +3,8 @@ import LeftoversHelperKit
 
 // Leftovers' privileged helper: a launchd daemon registered by the app with
 // SMAppService.daemon and approved once by the user in Login Items. It runs
-// as root on demand and can do exactly one thing: restart fseventsd.
+// as root on demand; it can change exactly one thing (restart fseventsd) and
+// read fseventsd's usage and its own version. Clients pass no input.
 
 // An unsigned or ad-hoc build has no team to check clients against: refuse to serve.
 guard let clientRequirement = SigningRequirement.forApp else {

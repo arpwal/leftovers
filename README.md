@@ -67,8 +67,13 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
     build spikes don't count; both limits are adjustable in Settings). It posts a
     notification with a **Restart fseventsd** button and, with automatic restarts on
     (the default), restarts it itself, at most once every 30 minutes; a relapse within
-    that only alerts. Each restart is logged with what it was using, and the last one
-    is shown.
+    that only alerts. If it keeps coming back soon after restarts, the wait doubles
+    (up to a day), and after three times automatic restarts pause with a one-click
+    "raise the limit" (its normal size on your Mac is simply above it). Readings are
+    ignored for 2 minutes after a restart, Leftovers checks a new fseventsd started,
+    and all of this state survives relaunching the app. Each restart is logged with
+    what it was using, and the last one is shown. fseventsd is never part of
+    **Clean Up**: it has its own card and button.
   - **Likely Leaks**: each one with a plain-language reason and a Quit button.
   - **Apps**: every app with all of its helper processes summed, with the app's own icon.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
@@ -163,15 +168,21 @@ Before signalling a process, it checks the process ID still belongs to the same 
 **The one exception: fseventsd.** It's a root process, but when it leaks the only fix
 is restarting it, and that's safe: launchd starts a fresh one at once (apps that use
 file events, like Time Machine and Spotlight, may rescan, hence the 30-minute limit on
-automatic restarts). Restarting needs root, so Leftovers ships a tiny helper
+automatic restarts). Reading its memory and CPU needs root too: without the helper,
+Leftovers uses the setuid `/bin/ps` and `/usr/bin/top`, and shows "reading
+unavailable" (never 0) if those fail. Restarting needs root, so Leftovers ships a tiny helper
 (`LeftoversHelper`, a launchd daemon registered with `SMAppService`) that you allow once
-in **System Settings › General › Login Items**. It can do exactly one thing: send
-SIGTERM to the process at
+in **System Settings › General › Login Items** (only for the signed app in
+Applications; turning automatic restarts off removes it). It can change exactly one
+thing: send SIGTERM to the root process started by launchd at
 `/System/Library/Frameworks/CoreServices.framework/…/FSEvents.framework/Versions/A/Support/fseventsd`,
 after checking its path and start time, and SIGKILL only if that same process is still
-running 60 seconds later (a bloated fseventsd takes a while to save its state). It
-takes no input, and accepts connections only from Leftovers signed by the same
-developer team. There is no general "run as root". Without the helper, **Restart
+running 60 seconds later (a bloated fseventsd takes a while to save its state; a
+SIGKILL loses its unsaved journal and is logged as such). Besides that it only reads
+fseventsd's usage and reports its own version (so an updated app re-registers a stale
+helper). It takes no input, runs one restart at a time, and accepts connections only
+from Leftovers' bundle ID signed by the same developer team. There is no general "run
+as root". Homebrew's `uninstall` removes it with the app. Without the helper, **Restart
 fseventsd** asks for your administrator password (macOS's own prompt runs
 `killall fseventsd`), and automatic restarts stay off. Switch the helper off in Login
 Items at any time.
@@ -207,7 +218,8 @@ leftovers --jobs     # scheduled background jobs (add --json for agents)
 leftovers --worktrees   # git worktrees and which are safe to remove (add --json)
 leftovers --disk        # system, apps and yours, plus developer caches (add --json)
 leftovers --fseventsd   # fseventsd's memory and CPU against the watchdog's limits (add --json)
-leftovers --restart-fseventsd   # restart it (helper if allowed, else a password prompt)
+leftovers --restart-fseventsd   # restart it (helper if allowed, else a password prompt;
+                                # respects the 30-minute cooldown unless --force)
 leftovers --help     # every command
 ```
 

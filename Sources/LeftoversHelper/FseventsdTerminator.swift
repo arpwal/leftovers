@@ -20,7 +20,8 @@ enum FseventsdTerminator {
         }
         if let failure = signal(target, SIGKILL) { return failure }
         return waitForExit(target, within: killConfirmation)
-            ? RestartOutcome(result: .forceKilled, detail: "fseventsd (pid \(target.pid)) ignored the request and was force-quit")
+            // SIGKILL skips the journal flush; the outcome and the app's log say so.
+            ? RestartOutcome(result: .forceKilled, detail: "fseventsd (pid \(target.pid)) didn't quit within \(Int(HelperConstants.terminateGracePeriod)) s and was force-quit (SIGKILL); events it hadn't saved to its journal were lost")
             : RestartOutcome(result: .failed, detail: "fseventsd (pid \(target.pid)) survived SIGKILL")
     }
 

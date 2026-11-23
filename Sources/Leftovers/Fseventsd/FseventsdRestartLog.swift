@@ -20,13 +20,17 @@ struct FseventsdRestartEntry: Codable, Equatable, Sendable {
     let cpuPercentBefore: Double?
     let memoryBytesBefore: UInt64?
     let result: RestartResult
+    /// For `.forceKilled` this says SIGKILL was used (its unsaved journal was lost).
     let detail: String
+    /// The fseventsd launchd started afterwards; nil if none appeared in time.
+    let newPid: Int32?
 
     var succeeded: Bool { result == .terminated || result == .forceKilled }
 
     /// "Restarted 2h 5m ago (automatic) · was 20 GB, 118% CPU".
     var summary: String {
-        let when = "\(succeeded ? "Restarted" : "Restart failed") \(Format.age(Date().timeIntervalSince(date))) ago (\(trigger.label))"
+        let verb = result == .forceKilled ? "Force-restarted (SIGKILL)" : succeeded ? "Restarted" : "Restart failed"
+        let when = "\(verb) \(Format.age(Date().timeIntervalSince(date))) ago (\(trigger.label))"
         guard let memory = memoryBytesBefore else { return when }
         return "\(when) · was \(Format.bytes(memory)), \(Format.cpu(cpuPercentBefore)) CPU"
     }

@@ -11,6 +11,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         super.init()
     }
 
+    /// The notification delegate and buttons must exist before launch
+    /// finishes, or a tap on "Restart fseventsd" that launched the app is lost.
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        UpdateNotifier.shared.start()
+        FseventsdNotifier.registerCategories()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         StartupTrace.mark("did finish launching")
         WindowCoordinator.shared.store = store

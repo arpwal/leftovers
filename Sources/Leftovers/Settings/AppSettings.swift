@@ -71,12 +71,13 @@ enum AppSettings {
         UserDefaults.standard.object(forKey: SettingsKey.autoRestartFseventsd) as? Bool ?? true
     }
 
+    /// The user's limits, clamped (CPU 1–100%, memory ≥ 20 MB, cooldown ≥ 10 min).
     static var fseventsdLimits: FseventsdLimits {
         let defaults = UserDefaults.standard
         let cpu = defaults.object(forKey: SettingsKey.fseventsdCpuPercent) as? Double ?? Thresholds.fseventsdCpuPercent
         let megabytes = defaults.object(forKey: SettingsKey.fseventsdMemoryMB) as? Int ?? Int(Thresholds.fseventsdMemory >> 20)
-        return FseventsdLimits(cpuPercent: cpu, memoryBytes: UInt64(max(megabytes, 1)) << 20,
-                               sustainedFor: Thresholds.fseventsdSustainedCpu)
+        return .clamped(cpuPercent: cpu, memoryMB: megabytes, cooldown: Thresholds.fseventsdRestartCooldown,
+                        sustainedFor: Thresholds.fseventsdSustainedCpu)
     }
 
     static var activationPolicy: NSApplication.ActivationPolicy { showInDock ? .regular : .accessory }

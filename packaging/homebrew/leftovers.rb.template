@@ -13,5 +13,14 @@ cask "leftovers" do
 
   app "Leftovers.app"
 
-  zap trash: "~/Library/Preferences/com.arpwal.leftovers.plist"
+  # The fseventsd helper is a launchd daemon registered by the app (SMAppService);
+  # stop and remove it with the app so it doesn't outlive it.
+  uninstall quit:      "com.arpwal.leftovers",
+            launchctl: "com.arpwal.leftovers.helper"
+
+  zap launchctl: "com.arpwal.leftovers.helper",
+      trash:     [
+        "~/Library/Application Support/Leftovers",
+        "~/Library/Preferences/com.arpwal.leftovers.plist",
+      ]
 end

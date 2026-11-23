@@ -9,6 +9,8 @@ final class UpdateNotifier: NSObject, UNUserNotificationCenterDelegate {
     nonisolated private static let identifier = "leftovers.update"
     private var center: UNUserNotificationCenter { .current() }
 
+    /// Idempotent; called before launch finishes so a notification tap that
+    /// launched the app is delivered here.
     func start() { center.delegate = self }
 
     func notify(version: String) {
@@ -31,10 +33,12 @@ final class UpdateNotifier: NSObject, UNUserNotificationCenterDelegate {
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                             withCompletionHandler completionHandler: @escaping () -> Void) {
         let identifier = response.notification.request.identifier
-        let restartTapped = response.actionIdentifier == FseventsdNotifier.restartAction
+        let action = response.actionIdentifier
         Task { @MainActor in
-            if restartTapped {
+            if action == FseventsdNotifier.restartAction {
                 await FseventsdWatchdog.shared.restart(trigger: .manual)
+            } else if action == FseventsdNotifier.raiseAction {
+                FseventsdWatchdog.shared.raiseLimits()
             } else if FseventsdNotifier.isFseventsd(identifier) {
                 WindowCoordinator.shared.showDashboard(section: .leaks)
             } else if identifier == LowDiskWatcher.identifier {
