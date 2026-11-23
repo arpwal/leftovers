@@ -8,6 +8,7 @@ struct SectionPane: View {
     @ObservedObject private var worktrees = WorktreeStore.shared
     @ObservedObject private var disk = DiskStore.shared
     @ObservedObject private var advanced = AdvancedStore.shared
+    @ObservedObject private var fseventsd = FseventsdWatchdog.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -55,6 +56,7 @@ struct SectionPane: View {
                 .task { await worktrees.scanIfStale(monitor: store); await scheduled.reload() }
                 .task { await disk.scanIfStale() }
         case .leaks:
+            FseventsdCard(watchdog: fseventsd)
             if store.suspects.isEmpty {
                 ContentUnavailableView("No Leaks Found", systemImage: "checkmark.seal",
                                        description: Text("Nothing is holding memory it doesn't use."))

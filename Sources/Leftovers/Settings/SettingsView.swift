@@ -36,6 +36,7 @@ struct SettingsView: View {
                 }
                 Toggle("Warn me when the disk is almost full", isOn: $warnWhenDiskLow)
             }
+            Section("fseventsd") { FseventsdSettingsSection(watchdog: .shared) }
             Section("Protected") { protectedList }
             Section("About") {
                 LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev")

@@ -18,7 +18,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         menu.delegate = self
         statusItem.menu = menu
         statusItem.button?.imagePosition = .imageLeading
-        subscription = store.objectWillChange
+        // The fseventsd watchdog publishes separately; either one redraws the button.
+        subscription = store.objectWillChange.merge(with: FseventsdWatchdog.shared.objectWillChange)
             .debounce(for: .milliseconds(50), scheduler: RunLoop.main)
             .sink { [weak self] _ in self?.updateButton() }
         updateButton()
@@ -29,8 +30,11 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         let available = Double(store.system?.availablePercent ?? 100)
         button.image = MenuBarGlyph.image(fraction: (100 - available) / 100)
         let showAmount = UserDefaults.standard.object(forKey: SettingsKey.showReclaimableInMenuBar) as? Bool ?? true
-        button.title = showAmount && !store.suspects.isEmpty ? " " + Format.bytes(store.reclaimableBytes) : ""
-        button.toolTip = "Leftovers"
+        let amount = showAmount && !store.suspects.isEmpty ? " " + Format.bytes(store.reclaimableBytes) : ""
+        // A runaway fseventsd gets a badge: it's the one problem worth noticing unprompted.
+        let fseventsd = FseventsdWatchdog.shared.needsRestart
+        button.title = amount + (fseventsd ? " ⚠︎" : "")
+        button.toolTip = fseventsd ? "Leftovers: fseventsd needs a restart" : "Leftovers"
     }
 
     func menuNeedsUpdate(_ menu: NSMenu) {

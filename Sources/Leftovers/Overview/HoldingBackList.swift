@@ -9,6 +9,10 @@ struct HoldingBackList: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("What's holding your Mac back").font(.headline).padding(.bottom, 6)
+            if let fseventsd = model.runawayFseventsd {
+                row("exclamationmark.triangle", "fseventsd is running away", detail: "macOS's file-event service · restart it",
+                    value: fseventsd.usage, section: .leaks)
+            }
             row("drop.triangle", "Likely leaks", detail: count(model.leakCount, "process", "processes"),
                 value: Format.bytes(model.leakBytes) + " memory", section: .leaks)
             row("arrow.triangle.branch", "Worktrees already on main", detail: count(model.safeWorktreeCount, "worktree", "worktrees"),

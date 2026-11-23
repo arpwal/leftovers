@@ -23,4 +23,21 @@ enum Thresholds {
 
     /// Rows under this footprint are hidden from the lists as noise.
     static let listMinFootprint: UInt64 = 50 << 20
+
+    // MARK: fseventsd watchdog (defaults; CPU and memory are adjustable in Settings)
+
+    /// fseventsd counts as runaway above this CPU%…
+    static let fseventsdCpuPercent: Double = 10
+    /// …only when every sample over this long stays above it: builds spike it briefly.
+    static let fseventsdSustainedCpu: TimeInterval = 120
+    /// A fresh fseventsd uses ~5 MB; one that has leaked for weeks reaches many GB.
+    static let fseventsdMemory: UInt64 = 50 << 20
+    /// At most one automatic restart per this long: each restart makes Time
+    /// Machine and Spotlight rescan, so a re-cross within it only alerts.
+    static let fseventsdRestartCooldown: TimeInterval = 30 * 60
+    /// The footprint read (`top`, ~0.5 s of CPU) runs at most this often;
+    /// the cheap resident-size and CPU read runs every refresh.
+    static let fseventsdFootprintInterval: TimeInterval = 2 * 60
+    /// Over-threshold notifications (no restart) repeat at most this often.
+    static let fseventsdAlertQuietPeriod: TimeInterval = 6 * 3_600
 }

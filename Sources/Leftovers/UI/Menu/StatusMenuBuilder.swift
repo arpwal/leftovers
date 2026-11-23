@@ -10,7 +10,8 @@ struct StatusMenuBuilder {
     private var windows: WindowCoordinator { .shared }
 
     func items() -> [NSMenuItem] {
-        [.separator()] + leakItems() + [.separator()] + appItems() + agentItems()
+        [.separator()] + leakItems() + FseventsdMenuItems(watchdog: .shared).items()
+            + [.separator()] + appItems() + agentItems()
             + [.separator()] + commandItems()
     }
 

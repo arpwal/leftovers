@@ -8,10 +8,11 @@ struct OverviewView: View {
     @ObservedObject var worktrees: WorktreeStore
     @ObservedObject var jobs: ScheduledStore
     @ObservedObject var caches: DiskStore
+    @ObservedObject private var fseventsd = FseventsdWatchdog.shared
     @State private var disk = DiskUsage.read()
 
     var body: some View {
-        if let model = OverviewModel.make(store: store, worktrees: worktrees, jobs: jobs, caches: caches, disk: disk) {
+        if let model = OverviewModel.make(store: store, worktrees: worktrees, jobs: jobs, caches: caches, fseventsd: fseventsd, disk: disk) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     StrengthCard(model: model)

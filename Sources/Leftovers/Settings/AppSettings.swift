@@ -37,6 +37,10 @@ enum SettingsKey {
     static let showInDock = "showInDock"
     static let notifyAboutUpdates = "notifyAboutUpdates"
     static let warnWhenDiskLow = "warnWhenDiskLow"
+    static let watchFseventsd = "watchFseventsd"
+    static let autoRestartFseventsd = "autoRestartFseventsd"
+    static let fseventsdCpuPercent = "fseventsdCpuPercent"
+    static let fseventsdMemoryMB = "fseventsdMemoryMB"
 }
 
 /// Typed reads for code that cannot use `@AppStorage` (delegate, store loop).
@@ -56,6 +60,23 @@ enum AppSettings {
 
     static var warnWhenDiskLow: Bool {
         UserDefaults.standard.object(forKey: SettingsKey.warnWhenDiskLow) as? Bool ?? true
+    }
+
+    /// fseventsd watchdog: on by default, restarting automatically (with the helper).
+    static var watchFseventsd: Bool {
+        UserDefaults.standard.object(forKey: SettingsKey.watchFseventsd) as? Bool ?? true
+    }
+
+    static var autoRestartFseventsd: Bool {
+        UserDefaults.standard.object(forKey: SettingsKey.autoRestartFseventsd) as? Bool ?? true
+    }
+
+    static var fseventsdLimits: FseventsdLimits {
+        let defaults = UserDefaults.standard
+        let cpu = defaults.object(forKey: SettingsKey.fseventsdCpuPercent) as? Double ?? Thresholds.fseventsdCpuPercent
+        let megabytes = defaults.object(forKey: SettingsKey.fseventsdMemoryMB) as? Int ?? Int(Thresholds.fseventsdMemory >> 20)
+        return FseventsdLimits(cpuPercent: cpu, memoryBytes: UInt64(max(megabytes, 1)) << 20,
+                               sustainedFor: Thresholds.fseventsdSustainedCpu)
     }
 
     static var activationPolicy: NSApplication.ActivationPolicy { showInDock ? .regular : .accessory }

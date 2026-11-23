@@ -14,13 +14,15 @@ struct OverviewModel {
     let duplicateServerBytes: UInt64
     let duplicateServerCount: Int
     let failingJobs: Int
+    /// fseventsd over its limits (nil while healthy or not watched).
+    let runawayFseventsd: FseventsdHealth?
 
     var now: Int { SystemStrength.score(inputs) }
     var after: Int { SystemStrength.score(SystemStrength.afterCleanup(inputs)) }
 
     @MainActor
     static func make(store: MonitorStore, worktrees: WorktreeStore, jobs: ScheduledStore, caches: DiskStore,
-                     disk: (total: UInt64, free: UInt64)?) -> OverviewModel? {
+                     fseventsd: FseventsdWatchdog, disk: (total: UInt64, free: UInt64)?) -> OverviewModel? {
         guard let report = store.report else { return nil }
         let system = report.system
         let leaks = store.suspects
@@ -44,6 +46,7 @@ struct OverviewModel {
             cacheBytes: caches.cleanableBytes, cachesMeasured: !caches.progress.isScanning && caches.lastScan != nil,
             duplicateServerBytes: report.duplicateToolServers.reduce(0) { $0 + $1.totalFootprint },
             duplicateServerCount: report.duplicateToolServers.reduce(0) { $0 + $1.processCount },
-            failingJobs: jobs.failingCount)
+            failingJobs: jobs.failingCount,
+            runawayFseventsd: fseventsd.health.flatMap { $0.needsRestart ? $0 : nil })
     }
 }

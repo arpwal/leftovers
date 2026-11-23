@@ -30,9 +30,18 @@ final class UpdateNotifier: NSObject, UNUserNotificationCenterDelegate {
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                             withCompletionHandler completionHandler: @escaping () -> Void) {
-        let isLowDisk = response.notification.request.identifier == LowDiskWatcher.identifier
+        let identifier = response.notification.request.identifier
+        let restartTapped = response.actionIdentifier == FseventsdNotifier.restartAction
         Task { @MainActor in
-            if isLowDisk { WindowCoordinator.shared.showDashboard(section: .disk) } else { UpdateController.shared.checkForUpdates() }
+            if restartTapped {
+                await FseventsdWatchdog.shared.restart(trigger: .manual)
+            } else if FseventsdNotifier.isFseventsd(identifier) {
+                WindowCoordinator.shared.showDashboard(section: .leaks)
+            } else if identifier == LowDiskWatcher.identifier {
+                WindowCoordinator.shared.showDashboard(section: .disk)
+            } else {
+                UpdateController.shared.checkForUpdates()
+            }
         }
         completionHandler()
     }

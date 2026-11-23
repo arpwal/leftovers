@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Signs build/Leftovers.app with the Developer ID in packaging/release.env,
 # using the hardened runtime and a secure timestamp — both required for
-# notarization. Set SIGNING_IDENTITY=- for a local ad-hoc build.
+# notarization. Set SIGNING_IDENTITY_OVERRIDE=- for a local ad-hoc build
+# (the fseventsd helper refuses to run in an ad-hoc build: no team to check).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source packaging/release.env
@@ -19,6 +20,8 @@ else
   "${SIGN[@]}" "$SPARKLE/Autoupdate"
   "${SIGN[@]}" "$SPARKLE/Updater.app"
   "${SIGN[@]}" "$APP/Contents/Frameworks/Sparkle.framework"
+  # The helper's identifier is what the app's XPC code-signing requirement checks.
+  "${SIGN[@]}" --identifier com.arpwal.leftovers.helper "$APP/Contents/MacOS/LeftoversHelper"
   "${SIGN[@]}" "$APP"
 fi
 codesign --verify --deep --strict --verbose=2 "$APP"

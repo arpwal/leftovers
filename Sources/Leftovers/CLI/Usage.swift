@@ -13,6 +13,8 @@ enum Usage {
       --jobs [--json]              scheduled background jobs
       --worktrees [--json]         git worktrees and which are safe to remove
       --disk [--json]              disk split into system, apps and yours, plus developer caches
+      --fseventsd [--json]         fseventsd's memory and CPU against the watchdog's limits
+      --restart-fseventsd          restart fseventsd (helper if approved, else a password prompt)
       --check-updates [--install]  updater state and a check against the live feed
       --snapshot <dir> [--redact]  render the UI to PNGs
       --help                       this text

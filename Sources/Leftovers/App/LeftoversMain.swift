@@ -19,6 +19,8 @@ enum LeftoversMain {
         case let .jobs(json): JobsCommand.runAndExit(json: json)
         case let .worktrees(json): WorktreesCommand.runAndExit(json: json)
         case let .disk(json): DiskCommand.runAndExit(json: json)
+        case let .fseventsd(json): FseventsdCommand.runAndExit(json: json)
+        case .restartFseventsd: FseventsdCommand.restartAndExit()
         case let .checkUpdates(install): UpdateCheckCommand.runAndExit(install: install)
         case let .snapshot(directory, redact): SnapshotCommand.runAndExit(directory: directory, redact: redact)
         }

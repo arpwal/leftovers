@@ -116,7 +116,9 @@ enum WorktreeJudge {
         if tree.isMerged { return .safe(.alreadyOnMain) }
         if tree.isSquashMerged { return .safe(.squashMerged) }
         if tree.upstreamGone { return .safe(.branchDeleted) }
-        if let last = tree.lastCommit, let days = Calendar.current.dateComponents([.day], from: last, to: now).day,
+        // Elapsed 24-hour days, not calendar days: a daylight-saving change in
+        // between made calendar arithmetic count 30 days as 29.
+        if let last = tree.lastCommit, case let days = Int(now.timeIntervalSince(last) / 86_400),
            days >= quietDays { return .probablyDone(days: days) }
         return .keep(.notOnMain)
     }

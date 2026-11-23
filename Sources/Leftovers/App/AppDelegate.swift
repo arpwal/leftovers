@@ -22,6 +22,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             UpdateController.shared.start()
             LowDiskWatcher.shared.start()
+            FseventsdWatchdog.shared.start()
         }
     }
 

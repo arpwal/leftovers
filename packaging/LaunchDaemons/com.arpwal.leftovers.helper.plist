@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Leftovers' privileged helper (fseventsd watchdog). Registered from the app
+     with SMAppService.daemon and approved once in System Settings › General ›
+     Login Items. launchd starts it on demand when the app connects to the
+     Mach service; it exits when idle. Its only operation: restart fseventsd. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.arpwal.leftovers.helper</string>
+  <key>BundleProgram</key><string>Contents/MacOS/LeftoversHelper</string>
+  <key>MachServices</key>
+  <dict>
+    <key>com.arpwal.leftovers.helper</key><true/>
+  </dict>
+  <key>AssociatedBundleIdentifiers</key>
+  <array><string>com.arpwal.leftovers</string></array>
+</dict>
+</plist>

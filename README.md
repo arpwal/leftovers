@@ -59,6 +59,16 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
     - **Snapshots**: local Time Machine snapshots (macOS asks for your password) and
       purgeable space.
   - **Low-disk warning**: one notification a day when under 10% free (can be turned off).
+  - **fseventsd watchdog**: macOS's file-event service (`fseventsd`) can leak after
+    weeks of heavy file churn (git worktrees, `node_modules`): one reached 20 GB and
+    118% CPU after a month, filling 58 GB of swap. Leftovers watches it every refresh
+    and flags it in the menu (with a ⚠︎ in the menu bar), the Overview and Likely Leaks
+    when it uses more than **50 MB** or stays above **10% CPU for 2 minutes** (brief
+    build spikes don't count; both limits are adjustable in Settings). It posts a
+    notification with a **Restart fseventsd** button and, with automatic restarts on
+    (the default), restarts it itself, at most once every 30 minutes; a relapse within
+    that only alerts. Each restart is logged with what it was using, and the last one
+    is shown.
   - **Likely Leaks**: each one with a plain-language reason and a Quit button.
   - **Apps**: every app with all of its helper processes summed, with the app's own icon.
   - **Agents**: memory per coding-agent session (Claude Code, Codex, Gemini CLI, Cursor
@@ -83,7 +93,8 @@ RAM plus compressed plus swapped. That's the number macOS actually pays for.
   in Settings to keep just the dial. ⌘Q closes the window and Leftovers keeps
   watching; **Quit Leftovers** in the menu quits completely.
 - **Settings**: Dock icon, close behavior, open at login, updates (with a notification
-  when one is ready), refresh interval, menu-bar display, and your protected apps.
+  when one is ready), refresh interval, menu-bar display, the fseventsd watchdog, and
+  your protected apps.
 - **What's new**: every release has short, plain notes in [CHANGELOG.md](CHANGELOG.md),
   written by Claude from the release's changes.
 - **Command line for agents**: the same engine and safety rules, as text or JSON.
@@ -149,6 +160,22 @@ candidate:
 Before signalling a process, it checks the process ID still belongs to the same process
 (by start time). It asks the process to quit first and forces it only after 3 seconds.
 
+**The one exception: fseventsd.** It's a root process, but when it leaks the only fix
+is restarting it, and that's safe: launchd starts a fresh one at once (apps that use
+file events, like Time Machine and Spotlight, may rescan, hence the 30-minute limit on
+automatic restarts). Restarting needs root, so Leftovers ships a tiny helper
+(`LeftoversHelper`, a launchd daemon registered with `SMAppService`) that you allow once
+in **System Settings › General › Login Items**. It can do exactly one thing: send
+SIGTERM to the process at
+`/System/Library/Frameworks/CoreServices.framework/…/FSEvents.framework/Versions/A/Support/fseventsd`,
+after checking its path and start time, and SIGKILL only if that same process is still
+running 60 seconds later (a bloated fseventsd takes a while to save its state). It
+takes no input, and accepts connections only from Leftovers signed by the same
+developer team. There is no general "run as root". Without the helper, **Restart
+fseventsd** asks for your administrator password (macOS's own prompt runs
+`killall fseventsd`), and automatic restarts stay off. Switch the helper off in Login
+Items at any time.
+
 ## Install
 
 **Download:** [Leftovers.dmg](../../releases/latest/download/Leftovers.dmg), open it and drag
@@ -179,6 +206,8 @@ leftovers --check-updates   # updater state and a check against the live feed
 leftovers --jobs     # scheduled background jobs (add --json for agents)
 leftovers --worktrees   # git worktrees and which are safe to remove (add --json)
 leftovers --disk        # system, apps and yours, plus developer caches (add --json)
+leftovers --fseventsd   # fseventsd's memory and CPU against the watchdog's limits (add --json)
+leftovers --restart-fseventsd   # restart it (helper if allowed, else a password prompt)
 leftovers --help     # every command
 ```
 
@@ -198,7 +227,7 @@ from the kernel on your Mac, and nothing leaves it.
 swift build                    # debug build
 swift run Leftovers        # run the menu-bar app
 scripts/bundle.sh              # universal release .app in build/
-SIGNING_IDENTITY_OVERRIDE=- scripts/sign.sh   # ad-hoc sign for local use
+SIGNING_IDENTITY_OVERRIDE=- scripts/sign.sh   # ad-hoc sign for local use (no fseventsd helper)
 scripts/install-local.sh       # install (one copy only) and launch
 swift test                     # unit tests, plus integration tests against real git
 ```
@@ -214,10 +243,13 @@ Sources/Leftovers/
   Classification/  protection policy, leak rules, thresholds
   Agents/          agent-session attribution, duplicate tool servers
   Actions/         safe termination (identity check, TERM then KILL)
+  Fseventsd/       fseventsd watchdog: reading, limits, restart policy, helper client
   Store/           sampling loop and app state
   UI/              menu-bar popover, dashboard, design tokens
   CLI/             --report, --json, --clean, --snapshot [--redact]
   Onboarding/      three-page welcome with its animations
+Sources/LeftoversHelper/     the root helper (one XPC operation: restart fseventsd)
+Sources/LeftoversHelperKit/  shared by both: XPC contract, fseventsd identity, signing checks
 design/            icon sources (SVG)
 docs/              website (GitHub Pages) and README screenshots
 packaging/         Info.plist, icon, release config

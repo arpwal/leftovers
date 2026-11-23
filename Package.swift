@@ -12,9 +12,15 @@ let package = Package(
         .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.6.0"),
     ],
     targets: [
+        // Shared by the app and its privileged helper: the XPC contract, the
+        // fseventsd identity check and the code-signing requirements.
+        .target(name: "LeftoversHelperKit", path: "Sources/LeftoversHelperKit"),
+        // The root launchd daemon (SMAppService.daemon) whose only job is
+        // restarting fseventsd. Deliberately tiny: no AppKit, no Sparkle.
+        .executableTarget(name: "LeftoversHelper", dependencies: ["LeftoversHelperKit"], path: "Sources/LeftoversHelper"),
         .executableTarget(
             name: "Leftovers",
-            dependencies: [.product(name: "Sparkle", package: "Sparkle")],
+            dependencies: [.product(name: "Sparkle", package: "Sparkle"), "LeftoversHelperKit"],
             path: "Sources/Leftovers",
             // Sparkle.framework is embedded in Contents/Frameworks by scripts/bundle.sh.
             linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]
