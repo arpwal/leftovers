@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Leftovers: clean up what your apps and agents left running</title>
-<meta name="description" content="A free, open-source macOS menu-bar app that finds the dev servers, MCP servers and leaked helpers still holding memory, and quits them safely.">
+<title>Leftovers: clean up what your apps left running</title>
+<meta name="description" content="A free Mac app that finds the programs your apps and agents forgot to close, and cleans them up safely.">
 <meta property="og:title" content="Leftovers">
-<meta property="og:description" content="Clean up what your apps and agents left running. Free and open source for macOS.">
+<meta property="og:description" content="Clean up what your apps left running. A free Mac app.">
 <meta property="og:image" content="https://arpwal.github.io/leftovers/assets/og.png">
 <meta property="og:url" content="https://arpwal.github.io/leftovers/">
 <meta name="twitter:card" content="summary_large_image">
@@ -81,48 +81,48 @@ footer a{color:var(--muted)}
   </nav>
 
   <header class="hero">
-    <img class="icon" src="assets/icon.png" alt="Leftovers app icon: a memory pressure dial">
-    <h1>Clean up what your apps and agents left running.</h1>
-    <p class="lede">A free, open-source Mac app. It finds the dev servers, MCP servers, git worktrees and background jobs your apps and agents left behind, shows what they cost you, and cleans them up safely.</p>
+    <img class="icon" src="assets/icon.png" alt="Leftovers app icon: a dial">
+    <h1>Clean up what your apps left running.</h1>
+    <p class="lede">A free Mac app. It finds the programs your apps and coding agents forgot to close. It shows how much they slow you down. Then it cleans them up, safely.</p>
     <div class="actions">
       <a class="btn primary" href="https://github.com/arpwal/leftovers/releases/latest/download/Leftovers.dmg">Download for Mac</a>
       <a class="btn" href="https://github.com/arpwal/leftovers">View on GitHub</a>
     </div>
-    <p class="fine">macOS 14 or later · Apple silicon and Intel · Signed and notarized · MIT license</p>
-    <img class="shot" src="screenshots/agents-light.png" alt="Leftovers showing memory used by each coding-agent session and the MCP servers they duplicate">
+    <p class="fine">macOS 14 or newer · All Macs · Checked by Apple · Free and open source</p>
+    <img class="shot" src="screenshots/agents-light.png" alt="Leftovers showing how much memory each coding agent uses">
   </header>
 
   <section id="overview">
     <div class="story">
       <div class="section-head" style="margin:0">
         <h2>How strong is your Mac right now?</h2>
-        <p class="muted">Leftovers adds up what the leftovers are costing you in memory, swap and disk, and shows your Mac's strength now next to what a safe cleanup gives back. On the Mac it was built on: 41% now, 68% after cleanup.</p>
-        <p class="muted">It's an honest estimate, with the formula one click away: half memory available, a third swap, a fifth free disk.</p>
+        <p class="muted">Leftovers gives your Mac a score. It shows the score now, and the score after a clean up. On the Mac where we built it, the score went from 41% to 68%.</p>
+        <p class="muted">The math is simple, and you can see it with one click.</p>
       </div>
-      <img src="screenshots/overview-light.png" alt="Overview: strength 41% now and 68% after cleanup, with memory and disk bars and what's holding the Mac back">
+      <img src="screenshots/overview-light.png" alt="Overview: score 41% now and 68% after clean up">
     </div>
   </section>
 
   <section id="why">
     <div class="section-head">
-      <h2>Your Mac is slow, and nothing tells you why.</h2>
-      <p class="muted">Activity Monitor sorts by memory in RAM. The memory that is actually lost is somewhere else.</p>
+      <h2>Your Mac is slow. Nothing tells you why.</h2>
+      <p class="muted">Activity Monitor does not show the whole story. Some lost memory hides where it can't see.</p>
     </div>
     <div class="problems">
       <div class="card">
-        <h3>Leaks hide in swap</h3>
-        <div class="big">59 GB <small>held by a helper showing 7 MB</small></div>
-        <p class="muted">A video encoder leaked for four days. Almost all of it had been pushed to swap, so it barely showed up. Leftovers measures the full footprint: RAM, compressed and swapped.</p>
+        <h3>Lost memory hides</h3>
+        <div class="big">59 GB <small>hidden by one app</small></div>
+        <p class="muted">Activity Monitor said 7 MB. The real number was 59 GB. Leftovers counts all of it.</p>
       </div>
       <div class="card">
-        <h3>Agents leave a mess behind</h3>
-        <div class="big">3.9 GB <small>of duplicate MCP servers</small></div>
-        <p class="muted">Twelve Claude Code sessions each started their own copy of the same four MCP servers. Dev servers kept running days after their terminal closed.</p>
+        <h3>Agents leave a mess</h3>
+        <div class="big">3.9 GB <small>of extra copies</small></div>
+        <p class="muted">Twelve Claude Code windows each ran the same four tools. Some kept running for days after the window closed.</p>
       </div>
       <div class="card">
-        <h3>Cleaning up shouldn't be risky</h3>
-        <div class="big">0 <small>macOS processes ever quit</small></div>
-        <p class="muted">Leftovers never touches system or root processes, except restarting a runaway fseventsd through a helper you allow once. It asks before quitting anything, and checks a process is still the same one before it sends a signal.</p>
+        <h3>Cleaning up is safe</h3>
+        <div class="big">0 <small>Mac system parts closed</small></div>
+        <p class="muted">Leftovers does not close the parts your Mac needs. It always asks first. The one exception is the Spotlight helper, and only after you say yes.</p>
       </div>
     </div>
   </section>
@@ -131,30 +131,30 @@ footer a{color:var(--muted)}
     <div class="story">
       <div class="section-head" style="margin:0">
         <h2>Like kids running through the house.</h2>
-        <p class="muted">Each coding agent grabs something, sets up, and runs off to the next thing. The blocks, the plate and the shoes stay where they were dropped. On a Mac, those are dev servers, builds and MCP servers, and they keep holding memory until someone picks them up.</p>
+        <p class="muted">A kid grabs a toy, plays, and runs off. The toy stays on the floor. Coding agents do the same thing. They start programs and leave them running. Those programs keep using memory until someone cleans up.</p>
       </div>
-      <img src="screenshots/welcome-agents-light.png" alt="Leftovers welcome screen: blocks, takeout and shoes left on the floor, labelled dev server, MCP server and build">
+      <img src="screenshots/welcome-agents-light.png" alt="Toys, food and shoes left on the floor">
     </div>
   </section>
 
   <section id="features">
     <div class="section-head">
-      <h2>Everything in one menu-bar dial.</h2>
-      <p class="muted">The needle shows memory in use. The menu shows what to do about it.</p>
+      <h2>All in one dial at the top of your screen.</h2>
+      <p class="muted">The needle shows how full your memory is. Click it to see what to do.</p>
     </div>
     <div class="features">
-      <div class="card"><h3>Likely leaks</h3><p>Idle processes holding memory they don't use, each with a plain-language reason and a Quit button.</p></div>
-      <div class="card"><h3>Apps, with their logos</h3><p>Every app with all of its helper processes added up, so the one hogging memory has a face.</p></div>
-      <div class="card"><h3>Agents</h3><p>Memory for each Claude Code, Codex, Gemini CLI, Cursor Agent, Aider or OpenCode session, and everything it started.</p></div>
-      <div class="card"><h3>Your Mac's strength</h3><p>Memory, swap and disk in one score, now and after a safe cleanup, with the formula shown.</p></div>
-      <div class="card"><h3>Disk, split three ways</h3><p>How much is macOS, how much your apps and their data, how much is yours. Then clear the developer caches that rebuild themselves.</p></div>
-      <div class="card"><h3>Advanced cleanup</h3><p>AI models, Docker, old node_modules, dead simulators and Time Machine snapshots, each scanned only when you open it.</p></div>
-      <div class="card"><h3>fseventsd watchdog</h3><p>Restarts macOS's file-event service when it leaks or pins the CPU, after you allow it once. Alerts you either way.</p></div>
-      <div class="card"><h3>Worktree cleanup</h3><p>Finds git worktrees whose work is already on main, squash merges included, and removes them one by one or all at once.</p></div>
-      <div class="card"><h3>Scheduled jobs</h3><p>Every background job with its schedule, next run and status, and which agent set it up.</p></div>
-      <div class="card"><h3>One-step cleanup</h3><p>Quit every likely leak at once, after a standard confirmation that lists what will stop.</p></div>
-      <div class="card"><h3>Fast and light</h3><p>Open to numbers in well under a second, and each refresh shows how long it took. About 22 MB and no CPU at idle.</p></div>
-      <div class="card"><h3>Private</h3><p>No accounts, no telemetry. The only network request is an update check you can turn off. Everything it reads stays on your Mac.</p></div>
+      <div class="card"><h3>Likely leaks</h3><p>Programs that hold memory but do nothing. Each one says why, and has a Quit button.</p></div>
+      <div class="card"><h3>Apps, with their logos</h3><p>Every app and all its parts, added up. You can see which one uses the most.</p></div>
+      <div class="card"><h3>Agents</h3><p>How much memory each Claude Code, Codex, Gemini, Cursor, Aider or OpenCode window uses.</p></div>
+      <div class="card"><h3>Your Mac's score</h3><p>Memory and disk space in one score. Now, and after a clean up.</p></div>
+      <div class="card"><h3>Disk space</h3><p>See what macOS uses, what your apps use, and what you use. Then clear the junk files that come back on their own.</p></div>
+      <div class="card"><h3>Big clean ups</h3><p>Old AI models, Docker files, old project files, broken iPhone test devices and old backups.</p></div>
+      <div class="card"><h3>Spotlight helper fix</h3><p>When the Spotlight helper gets stuck and slows your Mac, Leftovers restarts it.</p></div>
+      <div class="card"><h3>Old project copies</h3><p>Finds extra copies of your code that are already done, and removes them.</p></div>
+      <div class="card"><h3>Scheduled jobs</h3><p>Every task that runs on its own, when it runs next, and if it works.</p></div>
+      <div class="card"><h3>One-click clean up</h3><p>Quit every leak at once. It shows you the list first.</p></div>
+      <div class="card"><h3>Fast and light</h3><p>Opens in less than a second. Uses very little memory itself.</p></div>
+      <div class="card"><h3>Private</h3><p>No account. No tracking. Nothing leaves your Mac.</p></div>
     </div>
     <div class="pair" style="margin-top:28px">
       <img src="screenshots/leaks-light.png" alt="Likely Leaks view">
@@ -165,105 +165,107 @@ footer a{color:var(--muted)}
   <section id="disk">
     <div class="story">
       <div class="section-head" style="margin:0">
-        <h2>Where did the disk go?</h2>
-        <p class="muted">Leftovers splits your disk three ways: macOS itself, the apps you installed with their data and caches, and your own files. Then it offers the caches that rebuild themselves. On the Mac it was built on, Xcode alone was keeping 93 GB of old build files.</p>
-        <p class="muted">A cache is only emptied while nothing using it runs, and your code and documents are never touched.</p>
-        <p class="muted">Advanced goes further: downloaded AI models, Docker images and build cache, old node_modules, simulators that can never start again, and local Time Machine snapshots. And if the disk drops under 10% free, you get one quiet notification a day.</p>
+        <h2>Where did my disk space go?</h2>
+        <p class="muted">Leftovers splits your disk into three parts: macOS, your apps, and your files. Then it finds junk files that are safe to delete. On one Mac, Xcode had 93 GB of old files.</p>
+        <p class="muted">It never deletes your code or your documents.</p>
+        <p class="muted">If your disk gets almost full, you get one alert a day.</p>
       </div>
-      <img src="screenshots/disk-light.png" alt="Disk: system, apps and your files on one bar, and developer caches you can empty">
+      <img src="screenshots/disk-light.png" alt="Disk: macOS, apps and your files on one bar">
     </div>
     <div class="story" style="margin-top:28px">
       <div class="section-head" style="margin:0">
-        <h3>Advanced: the big, rare cleanups</h3>
-        <p class="muted">On the Mac it was built on: 40 simulators that could never start again, holding 7 GB. Each Advanced page scans only when you open it.</p>
+        <h3>Big clean ups</h3>
+        <p class="muted">On one Mac: 40 broken iPhone test devices, using 7 GB. Leftovers only looks for these when you ask.</p>
       </div>
-      <img src="screenshots/simulators-light.png" alt="Advanced Simulators page: dead simulators and runtimes with sizes and Remove buttons">
+      <img src="screenshots/simulators-light.png" alt="Broken test devices with their sizes and Remove buttons">
     </div>
   </section>
 
   <section id="worktrees">
     <div class="section-head">
-      <h2>The worktrees your agents forgot.</h2>
-      <p class="muted">Agents open a git worktree per task and rarely clean up. Leftovers checks every one: is its work already on main, does it have uncommitted changes, is anything still working in it. It even spots branches that were squash-merged on GitHub, which git itself can't see.</p>
+      <h2>The project copies your agents forgot.</h2>
+      <p class="muted">Agents make a new copy of your code for each task. They don't delete it when they're done. Leftovers finds the copies whose work is already saved, and removes them.</p>
     </div>
     <div class="problems" style="margin-bottom:24px">
-      <div class="card"><div class="big">54 <small>of 78 worktrees already on main</small></div><p class="muted">51 of them squash-merged on GitHub. Removable in one step.</p></div>
-      <div class="card"><div class="big">55 GB <small>of disk given back</small></div><p class="muted">Each worktree carries its own dependencies and build output.</p></div>
-      <div class="card"><div class="big">0 <small>uncommitted changes ever lost</small></div><p class="muted">The check is read-only, and git refuses to remove a worktree with unsaved work. Branches are kept.</p></div>
+      <div class="card"><div class="big">54 <small>of 78 copies were done</small></div><p class="muted">All removed in one step.</p></div>
+      <div class="card"><div class="big">55 GB <small>of space back</small></div><p class="muted">Each copy has its own big folder of files.</p></div>
+      <div class="card"><div class="big">0 <small>work lost</small></div><p class="muted">A copy with unsaved work is never removed.</p></div>
     </div>
-    <img class="shot" src="screenshots/worktrees-light.png" alt="Worktrees view: status chips (safe to remove, has changes, not on main yet) and a sortable table">
+    <img class="shot" src="screenshots/worktrees-light.png" alt="Worktrees view: which copies are safe to remove">
   </section>
 
   <section id="fseventsd">
     <div class="section-head">
-      <h2>The macOS service that slows everything down.</h2>
-      <p class="muted"><code>fseventsd</code> records every file change on your disk, for Spotlight, Time Machine and any app watching files. After weeks of worktrees, <code>node_modules</code> and builds it can leak, and Activity Monitor won't tell you it's the reason your Mac crawls. Excluding folders from Spotlight doesn't help. Leftovers watches it and restarts it before you notice.</p>
+      <h2>When the Spotlight helper gets stuck.</h2>
+      <p class="muted">Your Mac has a helper that tells Spotlight when a file changes. If you change lots of files every day, this helper can get stuck. It eats memory and makes your whole Mac slow. Leftovers watches it. When it gets stuck, Leftovers restarts it.</p>
+      <p class="fine">Its real name is <code>fseventsd</code>.</p>
     </div>
     <div class="problems" style="margin-bottom:24px">
-      <div class="card"><div class="big">20 GB <small>after 31 days</small></div><p class="muted">Held by fseventsd at 118% CPU, with 58 GB of swap full. A restart brought it back to 5 MB in 30 seconds.</p></div>
-      <div class="card"><div class="big">50 MB <small>or 10% CPU</small></div><p class="muted">The default limits, both adjustable. CPU has to stay over for 2 minutes. Short spikes from builds don't count.</p></div>
-      <div class="card"><div class="big">1 <small>restart per 30 min</small></div><p class="muted">If it keeps coming back, Leftovers backs off and suggests a higher limit instead of looping.</p></div>
+      <div class="card"><div class="big">20 GB <small>after 31 days</small></div><p class="muted">It made one Mac very slow. One restart fixed it in 30 seconds.</p></div>
+      <div class="card"><div class="big">50 MB <small>is the limit</small></div><p class="muted">If it uses more, Leftovers steps in. You can change the limit.</p></div>
+      <div class="card"><div class="big">1 <small>restart per 30 min</small></div><p class="muted">If it keeps getting stuck, Leftovers waits longer and asks you what to do.</p></div>
     </div>
     <ul class="muted" style="margin:0;padding-left:20px;display:grid;gap:4px">
-      <li>A ⚠︎ on the menu-bar dial and a notification with a Restart button</li>
-      <li>Automatic restarts through a small helper you allow once in Login Items; it can restart fseventsd and nothing else</li>
-      <li>Without the helper, Restart asks for your password. It never asks on its own</li>
+      <li>You see a ⚠︎ at the top of your screen, and an alert with a Restart button</li>
+      <li>Say yes once, and Leftovers fixes it on its own from then on</li>
+      <li>If you don't say yes, it asks for your password each time you click Restart</li>
     </ul>
   </section>
 
   <section id="scheduled">
     <div class="story">
       <div class="section-head" style="margin:0">
-        <h2>Every background job, including the ones your agents scheduled.</h2>
-        <p class="muted">Agents don't just leave processes running. They schedule things: a watcher every 20 minutes, a script every morning. Leftovers lists every background job in your account with a schedule you can read, when it runs next, and whether it's working or failing.</p>
+        <h2>Every task that runs on its own.</h2>
+        <p class="muted">Agents also set up tasks that run by themselves, like one every 20 minutes. Leftovers shows each one. It shows when it runs next, and if it works.</p>
         <ul class="muted" style="margin:6px 0 0;padding-left:20px;display:grid;gap:4px">
-          <li>Pause, resume or run a job now, open its log, or move it to the Trash</li>
-          <li>Jobs an agent created are labelled with what they're for and when they end</li>
-          <li>Failing jobs stand out: it found a broken updater on the first run</li>
+          <li>Pause it, run it now, or throw it away</li>
+          <li>See which agent made it, and why</li>
+          <li>Broken tasks are easy to spot</li>
         </ul>
       </div>
-      <img src="screenshots/scheduled-light.png" alt="Scheduled view: background jobs with schedules, next run and status, two labelled Added by Claude">
+      <img src="screenshots/scheduled-light.png" alt="Scheduled view: tasks with when they run and if they work">
     </div>
   </section>
 
   <section id="agents">
     <div class="section-head">
-      <h2>Built for agents, usable by agents.</h2>
-      <p class="muted">The app is also a command-line tool with the same engine and the same safety rules, so an agent can check memory and clean up after itself.</p>
+      <h2>Agents can use it too.</h2>
+      <p class="muted">You can also run Leftovers by typing commands. That way, a coding agent can check memory and clean up after itself.</p>
     </div>
 <pre class="term"><span class="c"># add the command once</span>
 ln -s /Applications/Leftovers.app/Contents/MacOS/Leftovers ~/.local/bin/leftovers
 
-leftovers --report   <span class="c"># readable summary</span>
-leftovers --json     <span class="c"># likelyLeaks, agents, duplicateToolServers</span>
-leftovers --clean    <span class="c"># quit likely leaks; protected processes are refused</span>
-leftovers --jobs     <span class="c"># scheduled background jobs (add --json)</span>
-leftovers --worktrees <span class="c"># git worktrees and which are safe to remove (add --json)</span></pre>
-    <p class="muted" style="margin-top:14px;max-width:68ch">Agents that schedule a job can leave a one-line note in <code>~/Library/Application Support/Leftovers/jobs/&lt;label&gt;.json</code> (purpose, creator, end date), and Leftovers labels the job with it.</p>
+leftovers --report    <span class="c"># a short summary</span>
+leftovers --json      <span class="c"># the same, for agents</span>
+leftovers --clean     <span class="c"># quit the leaks</span>
+leftovers --jobs      <span class="c"># tasks that run on their own</span>
+leftovers --worktrees <span class="c"># old project copies</span>
+leftovers --fseventsd <span class="c"># the Spotlight helper</span></pre>
+    <p class="muted" style="margin-top:14px;max-width:68ch">When an agent sets up a task, it can leave a short note in <code>~/Library/Application Support/Leftovers/jobs/</code>. Leftovers shows the note next to the task.</p>
   </section>
 
   <section id="install">
     <div class="section-head">
-      <h2>Install</h2>
+      <h2>Get it</h2>
     </div>
     <div class="install">
       <div class="card">
         <h3>Download</h3>
-        <p class="muted">Open the disk image and drag Leftovers to Applications. It's signed and notarized by Apple, so it opens without warnings.</p>
+        <p class="muted">Open the file and drag Leftovers into Applications. Apple has checked it, so it opens with no warnings.</p>
         <p><a class="btn primary" href="https://github.com/arpwal/leftovers/releases/latest/download/Leftovers.dmg">Download for Mac</a></p>
       </div>
       <div class="card">
         <h3>Homebrew</h3>
 <pre class="term">brew install --cask arpwal/tap/leftovers</pre>
-        <p class="fine">Or build from source with Swift 6: <code>swift build</code>.</p>
+        <p class="fine">Or build it yourself: <code>swift build</code>.</p>
       </div>
     </div>
   </section>
 
   <section id="support">
     <div class="card" style="text-align:center;justify-items:center;padding:40px 24px">
-      <h2 style="font-size:clamp(24px,3.2vw,32px)">Free, and staying free.</h2>
-      <p class="muted" style="max-width:52ch">No price, no account, no telemetry. If Leftovers gave you back a slow afternoon, a star on GitHub helps other people find it, and following along on X is how you'll hear what's next.</p>
+      <h2 style="font-size:clamp(24px,3.2vw,32px)">Free, now and always.</h2>
+      <p class="muted" style="max-width:52ch">No price. No account. No tracking. If Leftovers made your Mac fast again, give it a star on GitHub. It helps other people find it.</p>
       <div class="actions" style="margin-top:8px">
         <a class="btn primary" href="https://github.com/arpwal/leftovers">Star on GitHub</a>
         <a class="btn" href="https://x.com/arpwal">Follow @arpwal on X</a>
@@ -272,8 +274,8 @@ leftovers --worktrees <span class="c"># git worktrees and which are safe to remo
   </section>
 
   <footer>
-    <span>Leftovers is free and open source under the MIT license. Made by <a href="https://x.com/arpwal">@arpwal</a>.</span>
-    <span><a href="https://github.com/arpwal/leftovers">Source</a> · <a href="https://github.com/arpwal/leftovers/releases">Releases</a> · <a href="https://github.com/arpwal/leftovers/issues">Report an issue</a></span>
+    <span>Leftovers is free and open source. Made by <a href="https://x.com/arpwal">@arpwal</a>.</span>
+    <span><a href="https://github.com/arpwal/leftovers">Code</a> · <a href="https://github.com/arpwal/leftovers/releases">Updates</a> · <a href="https://github.com/arpwal/leftovers/issues">Report a problem</a></span>
   </footer>
 </div>
 </body>
