@@ -2,6 +2,13 @@
 
 Written by Claude from each release's changes, in plain words.
 
+## 1.9.0 · November 23, 2026
+
+- Fixes a bug that can leak memory when files change a lot
+- Can spot and restart the stuck helper for you
+- Won't lose permission to restart it after updates
+- Shows better status when it can't read memory use
+
 ## 1.8.0 · September 27, 2026
 
 - Disk section now updates itself in the background as it scans.

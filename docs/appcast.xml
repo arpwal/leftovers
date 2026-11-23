@@ -4,13 +4,13 @@
     <title>Leftovers</title>
     <link>https://arpwal.github.io/leftovers/</link>
     <item>
-      <title>Leftovers 1.8.0</title>
-      <pubDate>Mon, 28 Sep 2026 00:22:31 +0000</pubDate>
-      <sparkle:version>14</sparkle:version>
-      <sparkle:shortVersionString>1.8.0</sparkle:shortVersionString>
+      <title>Leftovers 1.9.0</title>
+      <pubDate>Mon, 23 Nov 2026 21:13:43 +0000</pubDate>
+      <sparkle:version>15</sparkle:version>
+      <sparkle:shortVersionString>1.9.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<ul><li>New Disk section shows what's using space and can rescan.</li><li>Get a warning when your disk is almost full.</li><li>Clean up AI models, Docker, and unused dev files easily.</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
-      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.8.0/Leftovers.zip" sparkle:edSignature="xzqRlUoG4/AnuMaubu4c7c29lBY9hOj6ePw87N6LPjQIMG7RYNmgEpNZOBRIsjhNFs+n8+uiojjK/L6X0MGhAw==" length="3989301" type="application/octet-stream"/>
+      <description><![CDATA[<ul><li>Spots a hidden system process quietly hogging memory and CPU</li><li>Lets you restart it with one click from an alert</li><li>Keeps its permission after updates, so you won't reapprove it</li><li>Pauses auto-restarts if trouble keeps coming back, with a quick fix</li></ul><p><a href="https://github.com/arpwal/leftovers/blob/main/CHANGELOG.md">All changes</a></p>]]></description>
+      <enclosure url="https://github.com/arpwal/leftovers/releases/download/v1.9.0/Leftovers.zip" sparkle:edSignature="ywVzK+ZYyGzBooP3WuLZyJZpT37oQQqOsxdPpIRuEfjnHooInOl52ySRzMIS8Fmmqzi/ADs1VkqdOb2knrPaBg==" length="4484690" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
