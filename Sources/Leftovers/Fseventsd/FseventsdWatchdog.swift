@@ -24,7 +24,6 @@ final class FseventsdWatchdog: ObservableObject {
     private let store = WatchdogStateStore()
     private var cpu = CpuOverTracker()
     private var loop: Task<Void, Never>?
-    private var checkedHelperVersion = false
 
     init() { state = WatchdogStateStore().load(baseCooldown: AppSettings.fseventsdLimits.cooldown) }
 
@@ -109,9 +108,11 @@ final class FseventsdWatchdog: ObservableObject {
         let health = FseventsdHealth(reading: reading, limits: limits, cpuOverFor: cpu.overFor(at: reading.takenAt))
         status = .measured(health)
         let policy = WatchdogPolicy(autoRestart: AppSettings.autoRestartFseventsd, helperReady: helperStatus.isReady, limits: limits)
-        var next = state
-        let action = policy.evaluate(health, state: &next, now: reading.takenAt)
-        store.save(next)
+        // Re-read and write back in one step: the reading above awaited, and a
+        // CLI restart recorded meanwhile must not be overwritten (cooldown bypass).
+        var action = WatchdogAction.none
+        store.update(baseCooldown: limits.cooldown) { action = policy.evaluate(health, state: &$0, now: reading.takenAt) }
+        let next = store.load(baseCooldown: limits.cooldown)
         state = next
         switch action {
         case .none: break
@@ -141,17 +142,11 @@ final class FseventsdWatchdog: ObservableObject {
         return remaining > 0 ? Date().addingTimeInterval(remaining) : nil
     }
 
-    /// Updates the helper's status, and once per launch checks the running
-    /// helper is from this build (after a Sparkle update it may not be).
+    /// Updates the helper's status. A helper left running from before an
+    /// update exits by itself (see `HelperVersion.isStale`); the app never
+    /// unregisters it, which would withdraw the Login Items approval.
     private func refreshHelper() async {
         helperStatus = PrivilegedHelper.status
-        guard helperStatus.isReady, !checkedHelperVersion else { return }
-        guard let version = await HelperClient.version() else { return }
-        checkedHelperVersion = true
-        if version != PrivilegedHelper.appBuild {
-            message = PrivilegedHelper.reregister() ?? "Updated the helper to this version."
-            helperStatus = PrivilegedHelper.status
-        }
     }
 
     /// Automatic restarts are on by default, so register the helper once at

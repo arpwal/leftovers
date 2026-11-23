@@ -71,17 +71,7 @@ enum PrivilegedHelper {
         try? service.unregister()
     }
 
-    /// After an update, a helper still running from the old build: unregister
-    /// and register again so launchd starts the new binary.
-    static func reregister() -> String? {
-        try? service.unregister()
-        return register()
-    }
-
     static func openLoginItems() { SMAppService.openSystemSettingsLoginItems() }
-
-    /// This app's build (CFBundleVersion), compared with the helper's.
-    static var appBuild: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown" }
 
     private static var plistIsBundled: Bool {
         let plist = Bundle.main.bundleURL.appendingPathComponent("Contents/Library/LaunchDaemons/\(HelperConstants.daemonPlistName)")

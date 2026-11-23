@@ -24,16 +24,20 @@ final class HelperActivity: @unchecked Sendable {
 
     func touch() { lock.withLock { lastActivity = Date() } }
 
-    /// Checks every 15 s and exits once idle for a minute.
+    /// Checks every 15 s; exits once idle for a minute, or as soon as no
+    /// restart is running after the app was updated (launchd then starts the
+    /// new build on the next request, keeping the user's approval).
     func exitWhenIdle() {
         let timer = DispatchSource.makeTimerSource(queue: .main)
         timer.schedule(deadline: .now() + 15, repeating: 15)
-        timer.setEventHandler { [self] in if isIdle { exit(0) } }
+        timer.setEventHandler { [self] in if isIdle || (HelperVersion.isStale && !isRestarting) { exit(0) } }
         timer.resume()
         idleTimer = timer
     }
 
     private var idleTimer: DispatchSourceTimer?
+
+    private var isRestarting: Bool { lock.withLock { restarting } }
 
     private var isIdle: Bool {
         lock.withLock { !restarting && Date().timeIntervalSince(lastActivity) > Self.idleLimit }

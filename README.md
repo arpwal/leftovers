@@ -179,8 +179,8 @@ thing: send SIGTERM to the root process started by launchd at
 after checking its path and start time, and SIGKILL only if that same process is still
 running 60 seconds later (a bloated fseventsd takes a while to save its state; a
 SIGKILL loses its unsaved journal and is logged as such). Besides that it only reads
-fseventsd's usage and reports its own version (so an updated app re-registers a stale
-helper). It takes no input, runs one restart at a time, and accepts connections only
+fseventsd's usage and reports its own version. After an update, a helper still running
+from the old build exits by itself, so your approval is kept. It takes no input, runs one restart at a time, and accepts connections only
 from Leftovers' bundle ID signed by the same developer team. There is no general "run
 as root". Homebrew's `uninstall` removes it with the app. Without the helper, **Restart
 fseventsd** asks for your administrator password (macOS's own prompt runs
